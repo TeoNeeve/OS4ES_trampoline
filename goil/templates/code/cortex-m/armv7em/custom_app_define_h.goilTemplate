@@ -18,6 +18,7 @@ foreach task in TASKS do
   end if
 end foreach
 %
+#define WITH_FLOAT     % !yesNo(use_float) %
 
 /*
  * Power mode to be used in the idle task
@@ -28,5 +29,5 @@ end foreach
 #define EM3_POWER_MODE     2
 #define EM4_POWER_MODE     3
 
-#define WITH_FLOAT     % !yesNo(use_float) %
+
 #define IDLE_POWER_MODE   % ! OS::IDLE_POWER_MODE %_POWER_MODE

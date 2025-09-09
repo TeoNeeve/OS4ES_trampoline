@@ -63,7 +63,7 @@ CPU stm32f303 {
   };
 
   INTERRUPT_COUNT nb_it {
-    IT_TABLE_SIZE = 90;
+    IT_TABLE_SIZE = 90; //74 STM32 interrupt + 16 ARM related interrupts
   };
   
   INTERRUPT NMI          {SETPRIO = TRUE { NUMBER = -14; };};
@@ -450,7 +450,7 @@ CPU stm32f303 {
 
   PLATFORM_FILES stm32f303_trace {
     PATH = "cortex-m/armv7em/stm32f303";
-	CFILE = "tpl_trace.c";
+	  CFILE = "tpl_trace.c";
   };
 
   PLATFORM_FILES stm32f303_cmsis {
@@ -464,8 +464,8 @@ CPU stm32f303 {
 
   LIBRARY serial {
     PATH = "cortex-m/armv7em/stm32f303/lib";
-	CHEADER = "serial.h";
-	CFILE   = "serial.c";
+	  CHEADER = "serial.h";
+	  CFILE   = "serial.c";
   };
 
   POSTBUILD all {

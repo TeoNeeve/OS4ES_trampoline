@@ -86,10 +86,6 @@ end foreach
  *
  * @section infos File informations
  *
- * $$Date$$
- * $$Rev$$
- * $$Author$$
- * $$URL$$
  */
 
 .syntax unified
@@ -137,6 +133,10 @@ end foreach
  * +------------------+
  * | xPSR (bit 9 = 1) | <- PSP+28
  * +------------------+
+ * If the FPU is enabled, the FPU context is not saved by hardware,
+ * as the kernel do not use FPU instructions. The FPU registers should
+ * be saved/restored in the load/save context functions
+ * (ArmV7 - Architecture Reference manual (DDI 0403E.e), sec. B.3.2.21)
  *
  */
 %
