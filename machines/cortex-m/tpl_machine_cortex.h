@@ -26,11 +26,11 @@
 #ifndef TPL_MACHINE_CORTEX_H
 #define TPL_MACHINE_CORTEX_H
 
-#include "tpl_os_std_types.h"
-#include "tpl_os_internal_types.h"
-#include "tpl_os_custom_types.h"
 #include "tpl_machine.h"
+#include "tpl_os_custom_types.h"
+#include "tpl_os_internal_types.h"
 #include "tpl_os_kernel_stack.h"
+#include "tpl_os_std_types.h"
 
 /**
  * Definition of kernel access defines.
@@ -50,7 +50,8 @@
  * ARM core registers
  */
 /*
- * ARM_CORE_EXCEPTION_FRAME_SIZE is 32 bytes long :
+ * ARM_CORE_EXCEPTION_FRAME_SIZE is 32 bytes long 
+ * (both for non-floating-point and floating-point versions):
  * +-------------------------------+
  * | R0                            | <- PSP
  * +-------------------------------+
@@ -124,18 +125,18 @@ typedef struct ARM_CORE_CONTEXT
 /*
  * Floating Point Context
  */
-
-/* Number of single precision registers */
+/* number of single precision registers */
 #define NB_SPR 32
 
-struct ARM_FLOAT_CONTEXT {
-	/* We save s0-s31 */
-    uint32  spr[NB_SPR];
-	/* and Floating Point Status and Control Register */
-    uint32  fpscr;
-};
-
-typedef struct ARM_FLOAT_CONTEXT arm_float_context;
+typedef struct ARM_FLOAT_CONTEXT
+{
+  /** 
+   *  we only save s0 to s31 => 32 registers
+   *  and fpscr (Floating-point Status and Control Register)
+   **/
+  uint32 spr[NB_SPR];
+  uint32 fpscr;
+} arm_float_context;
 #endif
 
 /**
@@ -151,9 +152,10 @@ typedef uint32 tpl_stack_size;
 /**
  * Stack definition
  */
-struct TPL_STACK {
-    tpl_stack_word  *stack_zone;
-    tpl_stack_size  stack_size;
+struct TPL_STACK
+{
+  tpl_stack_word *stack_zone;
+  tpl_stack_size stack_size;
 };
 
 /**
@@ -161,22 +163,23 @@ struct TPL_STACK {
  */
 typedef struct TPL_STACK tpl_stack;
 
-#define OS_STACK_PATTERN ((uint32)0xDEADBEEF)
+#define OS_STACK_PATTERN  ((uint32)0xDEADBEEF)
+#define OS_FPUREG_PATTERN ((uint32)0xC0FFEE00)
 
 /**
  * Defines the entry point of the idle task
  */
 #define IDLE_ENTRY tpl_sleep
 
-#define DISABLE_FIQ() __asm__ __volatile__ ("cpsid f;")
+#define DISABLE_FIQ() __asm__ __volatile__("cpsid f;")
 
-#define ENABLE_FIQ()  __asm__ __volatile__ ("cpsie f;")
+#define ENABLE_FIQ() __asm__ __volatile__("cpsie f;")
 
-#define DISABLE_IRQ() __asm__ __volatile__ ("cpsid i;")
+#define DISABLE_IRQ() __asm__ __volatile__("cpsid i;")
 
-#define ENABLE_IRQ()  __asm__ __volatile__ ("cpsie i;")
+#define ENABLE_IRQ() __asm__ __volatile__("cpsie i;")
 
-FUNC (void, OS_CODE) tpl_init_machine_specific (void);
+FUNC(void, OS_CODE) tpl_init_machine_specific(void);
 
 #endif /* TPL_MACHINE_CORTEX_H */
 

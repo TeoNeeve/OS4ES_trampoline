@@ -57,6 +57,11 @@
  * +-------------------------------+                                          *
  * | xPSR (bit 9 = 1)              | <- PSP+28                                *
  * +-------------------------------+                                          *
+ * If the FPU is enabled, the FPU context is not saved by hardware,           *
+ * as the kernel do not use FPU instructions. The FPU registers should        *
+ * be saved/restored in the load/save context functions                       *
+ * (ArmV7 - Architecture Reference manual (DDI 0403E.e), sec. B.3.2.21)       *
+ *                                                                            * 
  * The second part is stored in a structure defined in tpl_machine_cortex.h   *
  * with a pointer from the static task descriptor                             *
  * +------------------+                                                       *
@@ -81,18 +86,7 @@
  *----------------------------------------------------------------------------*
  */
 
-#define CTX_GPR4    0
-#define CTX_GPR5    4
-#define CTX_GPR6    8
-#define CTX_GPR7    12
-#define CTX_GPR8    16
-#define CTX_GPR9    20
-#define CTX_GPR10   24
-#define CTX_GPR11   28
-#define CTX_PSP     32
-
-#define INT_CONTEXT   0
-#define FLOAT_CONTEXT 4
+#include "tpl_regs_offsets.h"
 
 /*=============================================================================
  * tpl_save_context_under_it is used to save the context of the running task.
@@ -129,21 +123,23 @@ tpl_save_context_under_it:
      */
     mrs r2,psp
     str r2,[r1,#CTX_PSP]
+
 #if WITH_FLOAT == YES
     /*-------------------------------------------------------------------------
-     * Get the pointer to the floating context from the pointer to the static
-     * descriptor of the running task
+     * Get a the pointer to the floating point context from the pointer to the
+     * static descriptor of the running task
      */
-    ldr r1, [r0,#FLOAT_CONTEXT]
-    cmp r1,#0   /* r1 is NULL if there is no float context for this process */
+    ldr r1,[r0,#FLOAT_CONTEXT]
+    cmp r1, #0 /* r1 is NULL if there is no float context for this process */
     beq no_save_fp
-    /* save s0 to s31 */
-    vstm r1!,{s0-s31}
+    /* save all s0 to s31 */
+    vstm r1!, {s0-s31}
     /* save fpscr */
     vmrs r0,fpscr
     str r0,[r1]
-no_save_fp: 
+no_save_fp:
 #endif
+
     bx  lr
 
 /*=============================================================================
@@ -183,19 +179,21 @@ tpl_load_context_under_it:
      */
     ldr r2,[r1,#CTX_PSP]
     msr psp,r2
+
 #if WITH_FLOAT == YES
     /*-------------------------------------------------------------------------
-     * Get the pointer to the floating context from the pointer to the static
-     * descriptor of the running task
+     * Get a the pointer to the floating point context from the pointer to the
+     * static descriptor of the running task
      */
     ldr r1,[r0,#FLOAT_CONTEXT]
-    cmp r1,#0 /* r1 is NULL if there is no float context for this process */
+    cmp r1, #0 /* r1 is NULL if there is no float context for this process */
     beq no_load_fp
-    vldm r1!,{s0-s31}   /* load s0 to s31 */
+    vldm r1!, {s0-s31} /* load s[0..31] */
     ldr r0,[r1]
-    vmsr fpscr,r0       /* load fpscr */
+    vmsr fpscr, r0 /* load fpscr */
 no_load_fp:
-#endif
+#endif // WITH_FLOAT
+end_fp:
     bx  lr
 
 #define OS_STOP_SEC_CODE

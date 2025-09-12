@@ -18,10 +18,6 @@
  *
  * @section infos File informations
  *
- * $Date$
- * $Rev$
- * $Author$
- * $URL$
  */
 
 .syntax unified
@@ -98,7 +94,6 @@
  * +------------------+
  * | xPSR (bit 9 = 1) | <- PSP+28
  * +------------------+
- *
  * If the FPU is enabled, the FPU context is not saved by hardware,
  * as the kernel do not use FPU instructions. The FPU registers should
  * be saved/restored in the load/save context functions
@@ -128,7 +123,7 @@ tpl_sc_handler:
     /*-------------------------------------------------------------------------
      * 0 - registers R0-R3 have to be restored from the stack. First the PSP
      *     (process stack pointer) is copied in R0. Second registers R0-R3 are 
-     * loaded from the process stack
+     *     loaded from the process stack
      */
     mrs   r0,psp
     ldmia r0,{r0, r1, r2, r3}
@@ -259,7 +254,7 @@ tpl_sc_handler_no_context_switch:
 
     /*-------------------------------------------------------------------------
      * 18 - Restore the link register from the kernel stack.
-     *      Symetric of stages 4
+     *      Symetric of stage 4
      */
     ldr   r4,[sp,#KS_LR]
     mov   lr,r4
