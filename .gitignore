@@ -27,3 +27,18 @@ tmpExamplesCompilation
 *.ind
 ## VSCode
 .vscode
+## Folders
+autosar/
+com/
+debug/
+documentation/
+examples/
+extra/
+goil/
+ioc/
+libraries/
+machines/
+make/
+OS/
+tests/
+viper/
