@@ -1,3 +1,0 @@
-CC = ccrh
-AS = ccrh
-LD = rlink
