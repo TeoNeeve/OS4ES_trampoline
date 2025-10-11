@@ -39,6 +39,11 @@ ioc/
 libraries/
 machines/
 make/
-OS/
+os/
 tests/
 viper/
+.gitattributes
+.github
+.gitmodules
+LICENSE-GPLv2.txt
+_clang-format
