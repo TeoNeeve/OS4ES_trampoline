@@ -1,0 +1,108 @@
+/* 
+   System with two basic tasks:
+   Task1: low priority, print a message on screen either using or not mutual exclusion
+   Task2: high priority,print a message on screen either using or not mtual exclusion
+
+   Task1 is activated first; when resource is not used, race condition happens. 
+*/
+    
+OIL_VERSION = "2.5";
+
+IMPLEMENTATION trampoline {
+
+    /* This fix the default STACKSIZE of tasks */
+    TASK {
+        UINT32 STACKSIZE = 32768 ;
+    } ;
+
+    /* This fix the default STACKSIZE of ISRs */
+    ISR {
+        UINT32 STACKSIZE = 32768 ;
+    } ;
+};
+
+CPU two_tasks {
+  OS config {
+    STATUS = EXTENDED;
+	TRACE = TRUE {
+		FORMAT = json;
+		PROC = TRUE;
+        RESOURCE = TRUE;
+        ALARM = TRUE;
+        EVENT = TRUE;
+    };
+    BUILD = TRUE {
+      APP_SRC = "critical_section.c";
+      APP_SRC = "tpl_os_hooks.c";
+      TRAMPOLINE_BASE_PATH = "../../..";
+      CFLAGS="-ggdb";
+      APP_NAME = "critical_section.exe";
+      LINKER = "gcc";
+      SYSTEM = PYTHON;
+    };
+    STATUS = EXTENDED;
+    STARTUPHOOK = FALSE;
+    ERRORHOOK   = FALSE;
+    SHUTDOWNHOOK= FALSE;
+    PRETASKHOOK = TRUE;          /* Enable PreTaskHook */
+    POSTTASKHOOK= FALSE;
+
+  };
+  
+  APPMODE stdAppmode {};
+
+  ALARM Ticker {
+    COUNTER = SystemCounter;
+    ACTION  = ALARMCALLBACK {
+        ALARMCALLBACKNAME = "TickerCb";   /* function to call */
+    };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 1; };
+  };
+
+  
+  ALARM one_msec_taskLow {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = TaskLow; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 10; CYCLETIME = 80; };	/* 80 = 1000 msec */
+  };
+
+  ALARM one_msec_taskHigh {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = TaskHigh; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 12; CYCLETIME = 80; };
+  };
+
+  ALARM stopper {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = stop; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 400; CYCLETIME = 0; };
+  };
+    
+  RESOURCE Sem {
+	RESOURCEPROPERTY = STANDARD;
+  };
+
+  TASK TaskLow {
+    PRIORITY = 1;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = Sem;
+  };
+
+  TASK TaskHigh {
+    PRIORITY = 3;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = Sem;
+  };
+
+  TASK stop {
+    PRIORITY = 99;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+  
+};
