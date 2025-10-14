@@ -86,6 +86,12 @@
 		"target_state":"2"
 	},
 	{
+		"type":"resource",
+		"ts":"10",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"11",
 		"timeobj_id":"0"
@@ -107,30 +113,6 @@
 		"timeobj_id":"0"
 	},
 	{
-		"type":"proc",
-		"ts":"12",
-		"proc_id":"0",
-		"target_state":"1"
-	},
-	{
-		"type":"proc",
-		"ts":"12",
-		"proc_id":"1",
-		"target_state":"2"
-	},
-	{
-		"type":"proc",
-		"ts":"12",
-		"proc_id":"1",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"12",
-		"proc_id":"0",
-		"target_state":"2"
-	},
-	{
 		"type":"timeobj_expire",
 		"ts":"13",
 		"timeobj_id":"0"
@@ -144,6 +126,60 @@
 		"type":"timeobj_expire",
 		"ts":"15",
 		"timeobj_id":"0"
+	},
+	{
+		"type":"resource",
+		"ts":"15",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"1",
+		"target_state":"2"
+	},
+	{
+		"type":"resource",
+		"ts":"15",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"resource",
+		"ts":"15",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"1",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"0",
+		"target_state":"2"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"15",
+		"proc_id":"3",
+		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -164,18 +200,6 @@
 		"type":"timeobj_expire",
 		"ts":"19",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"19",
-		"proc_id":"0",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"19",
-		"proc_id":"3",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -556,6 +580,12 @@
 		"target_state":"2"
 	},
 	{
+		"type":"resource",
+		"ts":"90",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"91",
 		"timeobj_id":"0"
@@ -575,30 +605,6 @@
 		"type":"timeobj_expire",
 		"ts":"92",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"92",
-		"proc_id":"0",
-		"target_state":"1"
-	},
-	{
-		"type":"proc",
-		"ts":"92",
-		"proc_id":"1",
-		"target_state":"2"
-	},
-	{
-		"type":"proc",
-		"ts":"92",
-		"proc_id":"1",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"92",
-		"proc_id":"0",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -626,21 +632,63 @@
 		"timeobj_id":"0"
 	},
 	{
-		"type":"timeobj_expire",
-		"ts":"98",
-		"timeobj_id":"0"
+		"type":"resource",
+		"ts":"97",
+		"res_id":"0",
+		"target_state":"0"
 	},
 	{
 		"type":"proc",
-		"ts":"98",
+		"ts":"97",
+		"proc_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"proc",
+		"ts":"97",
+		"proc_id":"1",
+		"target_state":"2"
+	},
+	{
+		"type":"resource",
+		"ts":"97",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"resource",
+		"ts":"97",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"97",
+		"proc_id":"1",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"97",
+		"proc_id":"0",
+		"target_state":"2"
+	},
+	{
+		"type":"proc",
+		"ts":"97",
 		"proc_id":"0",
 		"target_state":"0"
 	},
 	{
 		"type":"proc",
-		"ts":"98",
+		"ts":"97",
 		"proc_id":"3",
 		"target_state":"2"
+	},
+	{
+		"type":"timeobj_expire",
+		"ts":"98",
+		"timeobj_id":"0"
 	},
 	{
 		"type":"timeobj_expire",
@@ -1026,6 +1074,12 @@
 		"target_state":"2"
 	},
 	{
+		"type":"resource",
+		"ts":"170",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"171",
 		"timeobj_id":"0"
@@ -1045,30 +1099,6 @@
 		"type":"timeobj_expire",
 		"ts":"172",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"172",
-		"proc_id":"0",
-		"target_state":"1"
-	},
-	{
-		"type":"proc",
-		"ts":"172",
-		"proc_id":"1",
-		"target_state":"2"
-	},
-	{
-		"type":"proc",
-		"ts":"172",
-		"proc_id":"1",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"172",
-		"proc_id":"0",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -1096,21 +1126,63 @@
 		"timeobj_id":"0"
 	},
 	{
-		"type":"timeobj_expire",
-		"ts":"178",
-		"timeobj_id":"0"
+		"type":"resource",
+		"ts":"177",
+		"res_id":"0",
+		"target_state":"0"
 	},
 	{
 		"type":"proc",
-		"ts":"178",
+		"ts":"177",
+		"proc_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"proc",
+		"ts":"177",
+		"proc_id":"1",
+		"target_state":"2"
+	},
+	{
+		"type":"resource",
+		"ts":"177",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"resource",
+		"ts":"177",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"177",
+		"proc_id":"1",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"177",
+		"proc_id":"0",
+		"target_state":"2"
+	},
+	{
+		"type":"proc",
+		"ts":"177",
 		"proc_id":"0",
 		"target_state":"0"
 	},
 	{
 		"type":"proc",
-		"ts":"178",
+		"ts":"177",
 		"proc_id":"3",
 		"target_state":"2"
+	},
+	{
+		"type":"timeobj_expire",
+		"ts":"178",
+		"timeobj_id":"0"
 	},
 	{
 		"type":"timeobj_expire",
@@ -1496,6 +1568,12 @@
 		"target_state":"2"
 	},
 	{
+		"type":"resource",
+		"ts":"250",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"251",
 		"timeobj_id":"0"
@@ -1515,30 +1593,6 @@
 		"type":"timeobj_expire",
 		"ts":"252",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"252",
-		"proc_id":"0",
-		"target_state":"1"
-	},
-	{
-		"type":"proc",
-		"ts":"252",
-		"proc_id":"1",
-		"target_state":"2"
-	},
-	{
-		"type":"proc",
-		"ts":"252",
-		"proc_id":"1",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"252",
-		"proc_id":"0",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -1561,6 +1615,60 @@
 		"timeobj_id":"0"
 	},
 	{
+		"type":"resource",
+		"ts":"256",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"1",
+		"target_state":"2"
+	},
+	{
+		"type":"resource",
+		"ts":"256",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"resource",
+		"ts":"256",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"1",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"0",
+		"target_state":"2"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"256",
+		"proc_id":"3",
+		"target_state":"2"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"257",
 		"timeobj_id":"0"
@@ -1574,18 +1682,6 @@
 		"type":"timeobj_expire",
 		"ts":"259",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"259",
-		"proc_id":"0",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"259",
-		"proc_id":"3",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -1966,6 +2062,12 @@
 		"target_state":"2"
 	},
 	{
+		"type":"resource",
+		"ts":"330",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"331",
 		"timeobj_id":"0"
@@ -1985,30 +2087,6 @@
 		"type":"timeobj_expire",
 		"ts":"332",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"332",
-		"proc_id":"0",
-		"target_state":"1"
-	},
-	{
-		"type":"proc",
-		"ts":"332",
-		"proc_id":"1",
-		"target_state":"2"
-	},
-	{
-		"type":"proc",
-		"ts":"332",
-		"proc_id":"1",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"332",
-		"proc_id":"0",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",
@@ -2036,6 +2114,60 @@
 		"timeobj_id":"0"
 	},
 	{
+		"type":"resource",
+		"ts":"337",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"1",
+		"target_state":"2"
+	},
+	{
+		"type":"resource",
+		"ts":"337",
+		"res_id":"0",
+		"target_state":"1"
+	},
+	{
+		"type":"resource",
+		"ts":"337",
+		"res_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"1",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"0",
+		"target_state":"2"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"0",
+		"target_state":"0"
+	},
+	{
+		"type":"proc",
+		"ts":"337",
+		"proc_id":"3",
+		"target_state":"2"
+	},
+	{
 		"type":"timeobj_expire",
 		"ts":"338",
 		"timeobj_id":"0"
@@ -2049,18 +2181,6 @@
 		"type":"timeobj_expire",
 		"ts":"340",
 		"timeobj_id":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"340",
-		"proc_id":"0",
-		"target_state":"0"
-	},
-	{
-		"type":"proc",
-		"ts":"340",
-		"proc_id":"3",
-		"target_state":"2"
 	},
 	{
 		"type":"timeobj_expire",

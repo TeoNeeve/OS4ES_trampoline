@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include "tpl_os.h"
 
-#define	SEM 0
+#define	SEM 1
 
 extern int my_time;
 
@@ -36,12 +36,12 @@ TASK(TaskLow)
 
   printf( "\n\r" );
 
-  if( SEM )
-    ReleaseResource(Sem);
-
   printf( "\r\n%08d: Task Low ends\r\n", my_time );
     
   TerminateTask();
+
+  if( SEM )
+    ReleaseResource(Sem);
 }
 
 TASK(TaskHigh)
@@ -58,12 +58,12 @@ TASK(TaskHigh)
 
   printf( "\n\r" );
 
-  if( SEM )
-	  ReleaseResource(Sem);
-
   printf( "\r\n%08d: Task High ends\r\n", my_time );
     
   TerminateTask();
+
+  if( SEM )
+  ReleaseResource(Sem);
 }
 
 TASK(stop)
