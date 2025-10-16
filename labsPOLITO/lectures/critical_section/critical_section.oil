@@ -72,6 +72,12 @@ CPU two_tasks {
     AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 12; CYCLETIME = 80; };
   };
 
+    ALARM one_msec_InterferingTask {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = InterferingTask; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 14; CYCLETIME = 80; };
+  };
+
   ALARM stopper {
     COUNTER = SystemCounter;
     ACTION = ACTIVATETASK { TASK = stop; };
@@ -96,6 +102,13 @@ CPU two_tasks {
     ACTIVATION = 1;
     SCHEDULE = FULL;
     RESOURCE = Sem;
+  };
+
+  TASK InterferingTask {
+    PRIORITY = 2;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
   };
 
   TASK stop {

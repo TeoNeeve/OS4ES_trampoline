@@ -110,12 +110,12 @@
 /*-----------------------------------------------------------------------------
  * Number of priority levels
  */
-#define PRIO_LEVEL_COUNT       5
+#define PRIO_LEVEL_COUNT       6
 
 /*-----------------------------------------------------------------------------
  * Number of tasks
  */
-#define TASK_COUNT             3
+#define TASK_COUNT             4
 
 /*-----------------------------------------------------------------------------
  * Number of spinlocks
@@ -135,7 +135,7 @@
 /*-----------------------------------------------------------------------------
  * Number of alarms
  */
-#define ALARM_COUNT            4
+#define ALARM_COUNT            5
 
 /*-----------------------------------------------------------------------------
  * Number of regular resources (standard and linked) plus RES_SCHEDULER if used 
@@ -193,7 +193,7 @@
 /*-----------------------------------------------------------------------------
  * Priority of RES_SCHEDULER
  */
-#define RES_SCHEDULER_PRIORITY 5
+#define RES_SCHEDULER_PRIORITY 6
 
 #define IDLE_TASK_ID    TASK_COUNT + ISR_COUNT
 

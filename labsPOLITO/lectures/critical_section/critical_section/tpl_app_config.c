@@ -54,12 +54,14 @@ CONST(tpl_application_mode, OS_CONST) stdAppmode = 0; /* mask = 1 */
 CONST(tpl_application_mode, OS_CONST) OSDEFAULTAPPMODE = 0;
 CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   0 /* task TaskLow :  */ ,
+  0 /* task InterferingTask :  */ ,
   0 /* task TaskHigh :  */ ,
   0 /* task stop :  */ 
 };
 
 CONST(tpl_appmode_mask, OS_CONST) tpl_alarm_app_mode[ALARM_COUNT] = {
   1 /* alarm Ticker : stdAppmode */ ,
+  1 /* alarm one_msec_InterferingTask : stdAppmode */ ,
   1 /* alarm one_msec_taskHigh : stdAppmode */ ,
   1 /* alarm one_msec_taskLow : stdAppmode */ ,
   1 /* alarm stopper : stdAppmode */ 
@@ -84,12 +86,16 @@ CONST(ResourceType, AUTOMATIC) Sem = Sem_id;
 #define TaskLow_id 0
 CONST(TaskType, AUTOMATIC) TaskLow = TaskLow_id;
 
+/* Task InterferingTask identifier */
+#define InterferingTask_id 1
+CONST(TaskType, AUTOMATIC) InterferingTask = InterferingTask_id;
+
 /* Task TaskHigh identifier */
-#define TaskHigh_id 1
+#define TaskHigh_id 2
 CONST(TaskType, AUTOMATIC) TaskHigh = TaskHigh_id;
 
 /* Task stop identifier */
-#define stop_id 2
+#define stop_id 3
 CONST(TaskType, AUTOMATIC) stop = stop_id;
 
 /*=============================================================================
@@ -100,16 +106,20 @@ CONST(TaskType, AUTOMATIC) stop = stop_id;
 #define Ticker_id 0
 CONST(AlarmType, AUTOMATIC) Ticker = Ticker_id;
 
+/* Alarm one_msec_InterferingTask identifier */
+#define one_msec_InterferingTask_id 1
+CONST(AlarmType, AUTOMATIC) one_msec_InterferingTask = one_msec_InterferingTask_id;
+
 /* Alarm one_msec_taskHigh identifier */
-#define one_msec_taskHigh_id 1
+#define one_msec_taskHigh_id 2
 CONST(AlarmType, AUTOMATIC) one_msec_taskHigh = one_msec_taskHigh_id;
 
 /* Alarm one_msec_taskLow identifier */
-#define one_msec_taskLow_id 2
+#define one_msec_taskLow_id 3
 CONST(AlarmType, AUTOMATIC) one_msec_taskLow = one_msec_taskLow_id;
 
 /* Alarm stopper identifier */
-#define stopper_id 3
+#define stopper_id 4
 CONST(AlarmType, AUTOMATIC) stopper = stopper_id;
 
 #define API_STOP_SEC_CONST_UNSPECIFIED
@@ -128,7 +138,7 @@ CONST(AlarmType, AUTOMATIC) stopper = stopper_id;
  * TaskLow
  */
 VAR(tpl_resource, OS_VAR) Sem_rez_desc = {
-  /* ceiling priority of the resource */  3,
+  /* ceiling priority of the resource */  4,
   /* owner previous priority          */  0,
   /* owner of the resource            */  INVALID_PROC_ID,
 #if RESOURCE_BELONGS_TO_OS_APP == YES
@@ -458,6 +468,111 @@ VAR(tpl_proc, OS_VAR) TaskLow_task_desc = {
 #include "tpl_memmap.h"
 
 /*-----------------------------------------------------------------------------
+ * Task InterferingTask descriptor
+ */
+#define APP_Task_InterferingTask_START_SEC_CODE
+
+#include "tpl_memmap.h"
+/*
+ * Task InterferingTask function prototype
+ */
+
+FUNC(void, OS_APPL_CODE) InterferingTask_function(void);
+#define APP_Task_InterferingTask_STOP_SEC_CODE
+
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Target specific structures
+ */
+/*
+ * Task InterferingTask stack
+ */
+#define APP_Task_InterferingTask_START_SEC_STACK
+#include "tpl_memmap.h"
+tpl_stack_word InterferingTask_stack_zone[32768/sizeof(tpl_stack_word)];
+#define APP_Task_InterferingTask_STOP_SEC_STACK
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_STACK InterferingTask_stack = {InterferingTask_stack_zone, 32768};
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define InterferingTask_STACK &InterferingTask_stack
+
+/*
+ * Task InterferingTask context
+ */
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_CONTEXT InterferingTask_context;
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define InterferingTask_CONTEXT &InterferingTask_context
+
+
+
+
+
+/*
+  No timing protection
+ */
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+/*
+ * Static descriptor of task InterferingTask
+ */
+CONST(tpl_proc_static, OS_CONST) InterferingTask_task_stat_desc = {
+  /* context                  */  InterferingTask_CONTEXT,
+  /* stack                    */  InterferingTask_STACK,
+  /* entry point (function)   */  InterferingTask_function,
+  /* internal ressource       */  NULL,
+  /* task id                  */  InterferingTask_id,
+#if WITH_OSAPPLICATION == YES
+  /* OS application id        */  
+#endif
+  /* task base priority       */  2,
+  /* max activation count     */  1,
+  /* task type                */  TASK_BASIC,
+#if WITH_AUTOSAR_TIMING_PROTECTION == YES
+
+  /* execution budget */        0,
+  /* timeframe        */        0, 
+  /* pointer to the timing
+     protection descriptor    */ NULL
+
+#endif
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*
+ * Dynamic descriptor of task InterferingTask
+ */
+VAR(tpl_proc, OS_VAR) InterferingTask_task_desc = {
+  /* resources                      */  NULL,
+#if WITH_OSAPPLICATION == YES
+  /* if > 0 the process is trusted  */  0,    
+#endif /* WITH_OSAPPLICATION */
+  /* activate count                 */  0,
+  /* task priority                  */  2,
+  /* task state                     */  SUSPENDED
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
  * Task TaskHigh descriptor
  */
 #define APP_Task_TaskHigh_START_SEC_CODE
@@ -532,7 +647,7 @@ CONST(tpl_proc_static, OS_CONST) TaskHigh_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  2,
+  /* task base priority       */  3,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -560,7 +675,7 @@ VAR(tpl_proc, OS_VAR) TaskHigh_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  2,
+  /* task priority                  */  3,
   /* task state                     */  SUSPENDED
 };
 
@@ -637,7 +752,7 @@ CONST(tpl_proc_static, OS_CONST) stop_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  4,
+  /* task base priority       */  5,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -665,7 +780,7 @@ VAR(tpl_proc, OS_VAR) stop_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  4,
+  /* task priority                  */  5,
   /* task state                     */  SUSPENDED
 };
 
@@ -681,6 +796,7 @@ VAR(tpl_proc, OS_VAR) stop_task_desc = {
 CONSTP2CONST(tpl_proc_static, AUTOMATIC, OS_APPL_DATA)
 tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &TaskLow_task_stat_desc,
+  &InterferingTask_task_stat_desc,
   &TaskHigh_task_stat_desc,
   &stop_task_stat_desc,
   &IDLE_TASK_task_stat_desc
@@ -689,6 +805,7 @@ tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 CONSTP2VAR(tpl_proc, AUTOMATIC, OS_APPL_DATA)
 tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &TaskLow_task_desc,
+  &InterferingTask_task_desc,
   &TaskHigh_task_desc,
   &stop_task_desc,
   &IDLE_TASK_task_desc
@@ -760,6 +877,61 @@ VAR(tpl_time_obj, OS_VAR) Ticker_alarm_desc = {
     /* prev alarm                   */  NULL,
     /* cycle                        */  1,
     /* date                         */  1,
+    /* State of the alarm           */  ALARM_AUTOSTART
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Alarm one_msec_InterferingTask descriptor
+ *
+ * This alarm does the activation of task InterferingTask
+ */
+
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+CONST(tpl_task_activation_action, OS_CONST) one_msec_InterferingTask_action = {
+  {
+    /* action function  */  tpl_action_activate_task
+  },
+  /* task id            */  InterferingTask_id
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+ 
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+CONST(tpl_alarm_static, OS_CONST) one_msec_InterferingTask_static = {
+  {
+    /* pointer to counter           */  &SystemCounter_counter_desc,
+    /* pointer to the expiration    */  tpl_raise_alarm
+#if (WITH_ID == YES)
+    /* id of the alarm for tracing  */  , one_msec_InterferingTask_id
+#endif
+#if WITH_OSAPPLICATION == YES
+    /* OS application id            */  , 
+#endif
+  },
+  /* action of the alarm  */  (tpl_action *)&one_msec_InterferingTask_action
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+VAR(tpl_time_obj, OS_VAR) one_msec_InterferingTask_alarm_desc = {
+    /* pointer to the static part   */  (tpl_time_obj_static *)&one_msec_InterferingTask_static,
+    /* next alarm                   */  NULL,
+    /* prev alarm                   */  NULL,
+    /* cycle                        */  80,
+    /* date                         */  14,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
@@ -937,6 +1109,7 @@ VAR(tpl_time_obj, OS_VAR) stopper_alarm_desc = {
 CONSTP2VAR(tpl_time_obj, AUTOMATIC, OS_APPL_DATA)
   tpl_alarm_table[ALARM_COUNT] = {
   &Ticker_alarm_desc,
+  &one_msec_InterferingTask_alarm_desc,
   &one_msec_taskHigh_alarm_desc,
   &one_msec_taskLow_alarm_desc,
   &stopper_alarm_desc
@@ -955,8 +1128,9 @@ CONSTP2VAR(tpl_time_obj, AUTOMATIC, OS_APPL_DATA)
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[6];
-VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[6] = {
+VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[7];
+VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[7] = {
+  0,
   0,
   0,
   0,
@@ -1000,6 +1174,7 @@ VAR(tpl_kern_state, OS_VAR) tpl_kern =
 CONSTP2CONST(char, AUTOMATIC, OS_APPL_DATA) proc_name_table[TASK_COUNT + ISR_COUNT + 1] = {
 
   "TaskLow",
+  "InterferingTask",
   "TaskHigh",
   "stop",
   "*idle*"

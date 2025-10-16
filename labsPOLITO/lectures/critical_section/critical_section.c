@@ -15,7 +15,9 @@ int main(void)
 
 DeclareAlarm(one_msec_taskLow);
 DeclareAlarm(one_msec_taskHigh);
+DeclareAlarm(one_msec_InterferingTask);
 DeclareTask(TaskLow);
+DeclareTask(InterferingTask);
 DeclareTask(TaskHigh);
 DeclareResource(Sem);
 
@@ -64,6 +66,22 @@ TASK(TaskHigh)
 
   if( SEM )
   ReleaseResource(Sem);
+}
+
+TASK(InterferingTask)
+{
+  int i;
+
+  printf( "\r\n%08d: Interfering Task starts\r\n", my_time );
+
+  for(i = 0;i < 5;i++ )
+    printf("%d/5,",i+1);
+
+  printf( "\n\r" );
+
+  printf( "\r\n%08d: Interfering Task ends\r\n", my_time );
+    
+  TerminateTask();
 }
 
 TASK(stop)

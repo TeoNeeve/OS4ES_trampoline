@@ -6,7 +6,8 @@ const char *taskNames[] = {
     "Idle Task",		// ID = -1
     "Task Low",			// ID = 0
     "Task High",		// ID = 1
-    "stop"			// ID = 2
+    "Interfering Task",		// ID = 2
+    "stop"			// ID = 3
 };
 
 int	my_time = 0;
