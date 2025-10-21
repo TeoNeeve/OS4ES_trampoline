@@ -33,7 +33,7 @@ CPU two_tasks {
     BUILD = TRUE {
       APP_SRC = "prodcons.c";
       APP_SRC = "tpl_os_hooks.c";
-      TRAMPOLINE_BASE_PATH = "/Users/massimoviolante/trampoline";
+      TRAMPOLINE_BASE_PATH = "../../..";
       CFLAGS="-ggdb";
       APP_NAME = "prodcons.exe";
       LINKER = "gcc";
