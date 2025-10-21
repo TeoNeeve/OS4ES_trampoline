@@ -75,7 +75,7 @@ CPU two_tasks {
   };
 
   TASK Producer {
-    PRIORITY = 2;
+    PRIORITY = 3;
     AUTOSTART = TRUE {APPMODE = stdAppmode;};
     ACTIVATION = 1;
     SCHEDULE = FULL;
@@ -83,11 +83,18 @@ CPU two_tasks {
   };
 
   TASK Consumer {
-    PRIORITY = 1;
+    PRIORITY = 2;
     AUTOSTART = FALSE;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     RESOURCE = Sem;
+  };
+
+  TASK ConsumerWorker {
+    PRIORITY = 1;
+    AUTOSTART = FALSE;
+    ACTIVATION = 4; // 4 isntances of this task can be queued
+    SCHEDULE = FULL;
   };
 
   TASK stop {

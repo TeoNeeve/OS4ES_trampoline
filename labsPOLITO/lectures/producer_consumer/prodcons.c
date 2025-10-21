@@ -132,13 +132,15 @@ TASK(Consumer)
 
 			i = buffer[rem];
 			rem = (rem+1) % BUF_SIZE;
-			wait_a_lot(DELAY);	// this gives the producer a chance to run BEFORE consumer operation is completed
 			num--;
-			wait_a_lot(DELAY);	// this gives the producer a chance to run BEFORE consumer operation is completed
 
 			printf ("\r\n\tConsumer: consumed value %d \t\t %d elements in the buffer\n\r", i, num);
 			fflush( stdout );
+			i = buffer[rem];
+			rem = (rem+1) % BUF_SIZE;
+			num--;
 
+			ActivateTask(ConsumerWorker); // activate a worker task to simulate processing time
 			#ifdef SEM
 				ReleaseResource( Sem );
 			#endif
@@ -152,6 +154,17 @@ TASK(Consumer)
 	TerminateTask();
 }
 
+TASK(ConsumerWorker)
+{
+	TaskType TaskId;
+	printf( "\r\n[%04d][PID%d] ConsumerWorker Start\n\r", my_time, TaskId );
+	fflush( stdout );
+	wait_a_lot(DELAY);	// this gives the producer a chance to run BEFORE consumer operation is completed
+	wait_a_lot(DELAY);
+	printf( "\r\n[%04d][PID%d] ConsumerWorker End\n\r", my_time, TaskId );
+	fflush( stdout );
+	TerminateTask();
+}
 TASK(stop)
 {
   CancelAlarm(one_msec_producer);
