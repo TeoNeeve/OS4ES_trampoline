@@ -1,0 +1,61 @@
+OIL_VERSION = "2.5" : "test" ;
+
+CPU test {    
+  	OS config {
+    	STATUS = STANDARD;
+    	BUILD = TRUE {
+    		TRAMPOLINE_BASE_PATH = "../../..";
+			APP_NAME = "ex1_arduino";
+			APP_SRC = "ex1.c";
+			APP_SRC = "tpl_os_hooks.c";
+			CPPCOMPILER = "avr-g++";
+    		COMPILER = "avr-gcc";
+    		LINKER = "avr-gcc";
+    		ASSEMBLER = "avr-gcc";
+    		COPIER = "avr-objcopy";
+    		SYSTEM = PYTHON;
+    	};
+    SYSTEM_CALL = TRUE;
+  	};
+
+	APPMODE stdAppmode {};
+
+	ALARM a500msec {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskA; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 500; CYCLETIME = 500; };
+	};
+
+	ALARM a750msec {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskB; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1500; CYCLETIME = 750; };
+	};
+
+	ALARM stopper {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = stop; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 6000; CYCLETIME = 0; };
+	};
+
+	TASK TaskA {
+		PRIORITY = 2;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+	TASK TaskB {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+	TASK stop {
+		PRIORITY = 99;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+};
