@@ -3,8 +3,8 @@
 
 #define LED_PIN 13 
 
-DeclareAlarm(a500msec);
-DeclareAlarm(a750msec);
+DeclareAlarm(a1000msec);
+DeclareAlarm(a250msec);
 
 void setup(void)
 {
@@ -21,13 +21,37 @@ void loop(void)
     }
 }
 
-TASK(TaskA)
+TASK(TaskV)
+{
+    if message = 0:
+        digitalWrite(LED_PIN, LOW);
+        break;
+    elif message = 1:
+        digitalWrite(LED_PIN, LOW);
+        break;
+    elif message = 2:
+        digitalWrite(LED_PIN, HIGH);
+        break;
+    elif message = 3:
+        digitalWrite(LED_PIN, HIGH);
+        break;
+    TerminateTask();
+}
+
+TASK(Blink_fast)
 {
     digitalWrite(LED_PIN, HIGH);
     TerminateTask();
 }
 
-TASK(TaskB)
+TASK(Blink_slow)
+{
+    digitalWrite(LED_PIN, LOW);
+    TerminateTask();
+}   
+
+
+TASK(TaskM)
 {
     digitalWrite(LED_PIN, LOW);
     TerminateTask();
@@ -35,8 +59,8 @@ TASK(TaskB)
 
 TASK(stop)
 {
-	CancelAlarm(a500msec);
-	CancelAlarm(a750msec);
+	CancelAlarm(a1000msec);
+	CancelAlarm(a250msec);
 	ShutdownOS(E_OK);
 	TerminateTask();
 }

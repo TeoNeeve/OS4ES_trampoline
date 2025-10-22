@@ -20,16 +20,16 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
-	ALARM a500msec {
+	ALARM a250msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskA; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 500; CYCLETIME = 500; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 250; CYCLETIME = 500; };
 	};
 
-	ALARM a750msec {
+	ALARM a1000msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskB; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1500; CYCLETIME = 750; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 750; };
 	};
 
 	ALARM stopper {
