@@ -22,14 +22,20 @@ CPU test {
 
 	ALARM a250msec {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskA; };
+		ACTION = ACTIVATETASK { TASK = Blink_fast; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 250; CYCLETIME = 500; };
 	};
 
 	ALARM a1000msec {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskB; };
+		ACTION = ACTIVATETASK { TASK = Blink_slow; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 750; };
+	};
+
+	ALARM a100msec {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskC; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 750; };
 	};
 
 	ALARM stopper {
