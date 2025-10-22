@@ -2,6 +2,11 @@
 #include "tpl_os.h"
 
 #define LED_PIN 13 
+#define pinSwitch 12
+
+const int pinA0 = A0;           // Pin analogic input
+const float Vref = 5.0;         // Reference Tension (5V)
+const int resolution = 1023;    // ADC resolution 10 bit
 
 DeclareAlarm(a1000msec);
 DeclareAlarm(a250msec);
@@ -10,8 +15,8 @@ void setup(void)
 {
     init();
     pinMode(LED_PIN, OUTPUT);
+    pinMode(pinSwitch, INPUT_PULLUP);
     StartOS(OSDEFAULTAPPMODE);
-    // return 0;
 }
 
 void loop(void)
@@ -19,6 +24,19 @@ void loop(void)
     while(1){
         // Task implementations used by the OIL file
     }
+}
+
+TASK(TaskC)
+{
+    int A0_valueADC = analogRead(pinA0);                  // analogica read A0
+    float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
+    
+}
+
+TASK(TaskM)
+{
+    digitalWrite(LED_PIN, LOW);
+    TerminateTask();
 }
 
 TASK(TaskV)
@@ -51,11 +69,6 @@ TASK(Blink_slow)
 }   
 
 
-TASK(TaskM)
-{
-    digitalWrite(LED_PIN, LOW);
-    TerminateTask();
-}
 
 TASK(stop)
 {
