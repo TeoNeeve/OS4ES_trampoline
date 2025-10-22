@@ -28,7 +28,21 @@ void loop(void)
 
 TASK(TaskC)
 {
-    int A0_valueADC = analogRead(pinA0);                  // analogica read A0
+    int A0_valueADC = analogRead(pinA0);                     // analogic read A0
+    float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
+    
+}
+
+void loop(void)
+{
+    while(1){
+        // Task implementations used by the OIL file
+    }
+}
+
+TASK(TaskC)
+{
+    int A0_valueADC = analogRead(pinA0);                     // analogic read A0
     float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
     
 }
@@ -45,10 +59,12 @@ TASK(TaskV)
         digitalWrite(LED_PIN, LOW);
         break;
     elif message = 1:
-        digitalWrite(LED_PIN, LOW);
+        TerminateTask(Blink_fast);
+        ActivateTask(Blink_slow);
         break;
     elif message = 2:
-        digitalWrite(LED_PIN, HIGH);
+        TerminateTask(Blink_slow);
+        ActivateTask(Blink_fast);
         break;
     elif message = 3:
         digitalWrite(LED_PIN, HIGH);
@@ -66,9 +82,7 @@ TASK(Blink_slow)
 {
     digitalWrite(LED_PIN, LOW);
     TerminateTask();
-}   
-
-
+}
 
 TASK(stop)
 {
