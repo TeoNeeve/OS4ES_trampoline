@@ -31,7 +31,7 @@ myData generate_next_data( void )
         myData tmp;
 
         tmp.ts = my_time;
-        tmp.data = 1+(random() % 1999);
+        tmp.data = 1+(random() % 1999);  //da cambiare: parti da 1000 e arrivi a 0 scendendo di uno alla volta
 
         return( tmp );
 }
