@@ -8,8 +8,13 @@ const int pinA0 = A0;           // Pin analogic input
 const float Vref = 5.0;         // Reference Tension (5V)
 const int resolution = 1023;    // ADC resolution 10 bit
 
+static unsigned int press_time_ms = 0;
+static bool pressed_flag = false;
+
 DeclareAlarm(a1000msec);
+DeclareAlarm(a500msec);
 DeclareAlarm(a250msec);
+DeclareAlarm(a100msec);
 
 void setup(void)
 {
@@ -28,12 +33,10 @@ void loop(void)
 
 void timer_pressure(void)
 {
-    static unsigned int press_time_ms = 0;
-    static bool pressed_flag = false;
     int A0_valueADC = analogRead(pinA0);                     // analogic read A0
     float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
     
-    if (digitalRead(12) == HIGH) { // Button pressed
+    if (digitalRead(pinSwitch) == HIGH) { // Button pressed
         if (!pressed_flag) {
             pressed_flag = true;
             press_time_ms = 0;
