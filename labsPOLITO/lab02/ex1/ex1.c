@@ -26,26 +26,41 @@ void loop(void)
     }
 }
 
-TASK(TaskC)
+void timer_pressure(void)
 {
+    static unsigned int press_time_ms = 0;
+    static bool pressed_flag = false;
     int A0_valueADC = analogRead(pinA0);                     // analogic read A0
     float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
     
-}
-
-void loop(void)
-{
-    while(1){
-        // Task implementations used by the OIL file
+    if (digitalRead(12) == HIGH) { // Button pressed
+        if (!pressed_flag) {
+            pressed_flag = true;
+            press_time_ms = 0;
+        } else {
+            press_time_ms += 100; // Assuming this function is called every 100 ms
+            if (press_time_ms >= 2000) { // 2 seconds threshold
+                ActivateTask(stop);
+            }
+        }
+    } else {
+        pressed_flag = false;
+        press_time_ms = 0;
     }
+
+    int message = A0_valueADC & 0x3FF;  // bits 0–9
+    if (pressed_flag)
+        message |= (1 << 12);            // bit 12
+
+    send_to_task_M(message);             // invio messaggio a M
 }
+
 
 TASK(TaskC)
 {
-    int A0_valueADC = analogRead(pinA0);                     // analogic read A0
-    float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
-    
+    timer_pressure();
 }
+
 
 TASK(TaskM)
 {
