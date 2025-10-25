@@ -31,7 +31,7 @@ void loop(void)
     }
 }
 
-void timer_pressure(void)
+int timer_pressure(void)
 {
     int A0_valueADC = analogRead(pinA0);                     // analogic read A0
     float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
@@ -54,20 +54,48 @@ void timer_pressure(void)
     int message = A0_valueADC & 0x3FF;  // bits 0–9
     if (pressed_flag)
         message |= (1 << 12);            // bit 12
-
-    send_to_task_M(message);             // invio messaggio a M
+    
+    return message;
 }
 
+int message_scheduler(int message)
+{
+    static int scheduled_message = 0;
+    if (message < 256) {
+        scheduled_message = 0; // LED OFF
+    } else if (message < 512) {
+        scheduled_message = 1; // Blink slow
+    } else if (message < 768) {
+        scheduled_message = 2; // Blink fast
+    } else {
+        scheduled_message = 3; // LED ON
+    }
+    
+    return scheduled_message;
+}
 
 TASK(TaskC)
 {
-    timer_pressure();
+    int message = timer_pressure();
+    StatusType status = SendMessage(MsgCtoM, &message); // Send message to TaskM function implemented by osek
+    if (status != E_OK)
+        printf("Errore nell’invio del messaggio!\n");
+
+    TerminateTask();
 }
 
 
 TASK(TaskM)
 {
-    digitalWrite(LED_PIN, LOW);
+    int received_message;
+    StatusType status = ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
+    if (status != E_OK)
+        printf("Errore nella ricezione del messaggio!\n");
+    if (received_message & (1 << 12))
+        printf("Pulsante premuto per più di 1 secondo!\n");
+    
+    message_scheduler = ();
+    
     TerminateTask();
 }
 
