@@ -103,29 +103,34 @@ TASK(TaskM)
     if (received_message & (1 << 12))
         printf("Pulsante premuto per più di 1 secondo!\n");
 
-    int message_scheduled = message_scheduler(received_message);
-    StatusType status = SendMessage(MsgMtoV, &message_scheduled); // Send message to TaskV function implemented by osek
-    if (status != E_OK)
-        printf("Errore nell’invio del messaggio!\n");
-    
+    int scheduled_message = message_scheduler(received_message);
+
+    if (scheduled_message != -1) {
+        status = SendMessage(MsgMtoV, &scheduled_message); // Send message to TaskV function implemented by osek
+        if (status != E_OK)
+            printf("Errore nell’invio del messaggio!\n");
+        }
+
     TerminateTask();
 }
 
 
 TASK(TaskV)
 {
-    if message = 0:
+    int received_message;
+    StatusType status = ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
+    if (received_message == 0) {
         digitalWrite(LED_PIN, LOW);
         break;
-    elif message = 1:
+    } else if (received_message == 1) {
         TerminateTask(Blink_fast);
         ActivateTask(Blink_slow);
         break;
-    elif message = 2:
+    } else if (received_message == 2) {
         TerminateTask(Blink_slow);
         ActivateTask(Blink_fast);
         break;
-    elif message = 3:
+    } else if (received_message == 3) {
         digitalWrite(LED_PIN, HIGH);
         break;
     TerminateTask();
