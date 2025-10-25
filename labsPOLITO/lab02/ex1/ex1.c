@@ -58,17 +58,27 @@ int timer_pressure(void)
     return message;
 }
 
-int message_scheduler(int message)
+int message_scheduler(int received_message)
 {
-    static int scheduled_message = 0;
-    if (message < 256) {
-        scheduled_message = 0; // LED OFF
-    } else if (message < 512) {
-        scheduled_message = 1; // Blink slow
-    } else if (message < 768) {
-        scheduled_message = 2; // Blink fast
-    } else {
+    static int scheduled_message = -1;
+    static int reference_value = 0;
+    static int difference = 0;
+    difference = abs((received_message & 0x3FF) - reference_value);
+    
+    if (received_message & (1 << 12)) {
+        reference_value = received_message & 0x3FF; // ricava il valore analogico di A0, tiene solo i bits 0-9
+    } else if (reference_value == 0) {
         scheduled_message = 3; // LED ON
+        return scheduled_message;
+    } else if (reference_value != 0 && difference < 100) {
+        scheduled_message = 0; // LED OFF
+        return scheduled_message;
+    } else if (difference >= 100 && difference < 200) {
+        scheduled_message = 1; // Blink slow
+        return scheduled_message;
+    } else if (difference >= 200) {
+        scheduled_message = 2; // Blink fast
+        return scheduled_message;
     }
     
     return scheduled_message;
@@ -80,7 +90,6 @@ TASK(TaskC)
     StatusType status = SendMessage(MsgCtoM, &message); // Send message to TaskM function implemented by osek
     if (status != E_OK)
         printf("Errore nell’invio del messaggio!\n");
-
     TerminateTask();
 }
 
@@ -93,11 +102,15 @@ TASK(TaskM)
         printf("Errore nella ricezione del messaggio!\n");
     if (received_message & (1 << 12))
         printf("Pulsante premuto per più di 1 secondo!\n");
-    
-    message_scheduler = ();
+
+    int message_scheduled = message_scheduler(received_message);
+    StatusType status = SendMessage(MsgMtoV, &message_scheduled); // Send message to TaskV function implemented by osek
+    if (status != E_OK)
+        printf("Errore nell’invio del messaggio!\n");
     
     TerminateTask();
 }
+
 
 TASK(TaskV)
 {
