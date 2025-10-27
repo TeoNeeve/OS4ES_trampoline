@@ -113,12 +113,13 @@ TASK(TaskM)
         if (status != E_OK)
             printf("Errore nell’invio del messaggio!\n");
         }
+    ActivateTask(TaskV);
     TerminateTask();
 }
 
 TASK(TaskV)
 {
-    int received_message;   //essendo periodico non serve il terminate task qui
+    int received_message;
     StatusType status = ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
     if (received_message == 0) { // LED OFF
         CancelAlarm(AlarmBlinkSlow);
