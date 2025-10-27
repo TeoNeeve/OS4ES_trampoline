@@ -97,7 +97,6 @@ TASK(TaskC)
     TerminateTask();
 }
 
-
 TASK(TaskM)
 {
     int received_message;
@@ -114,10 +113,8 @@ TASK(TaskM)
         if (status != E_OK)
             printf("Errore nell’invio del messaggio!\n");
         }
-
     TerminateTask();
 }
-
 
 TASK(TaskV)
 {
@@ -138,8 +135,6 @@ TASK(TaskV)
     }
     TerminateTask();
 }
-
-
 
 TASK(stop)
 {
