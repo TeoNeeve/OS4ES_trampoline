@@ -40,7 +40,7 @@ CPU test {
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskC; };
+		ACTION = ACTIVATETASK { TASK = TaskC;TaskV; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
 	};
 
