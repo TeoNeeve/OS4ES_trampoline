@@ -135,17 +135,7 @@ TASK(TaskV)
     TerminateTask();
 }
 
-TASK(Blink_fast)
-{
-    digitalWrite(LED_PIN, HIGH);
-    TerminateTask();
-}
 
-TASK(Blink_slow)
-{
-    digitalWrite(LED_PIN, LOW);
-    TerminateTask();
-}
 
 TASK(stop)
 {
