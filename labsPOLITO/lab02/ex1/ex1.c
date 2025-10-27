@@ -3,13 +3,16 @@
 
 #define LED_PIN 13 
 #define pinSwitch 12
+#define Switch_THRESHOLD 1000   // milliseconds
+#define ADC_10BIT_MASK 0x3FF    // Mask for 10-bit ADC (bits 0–9)
+#define PRESS_FLAG_BIT 12       // Bit position for press flag
 
 const int pinA0 = A0;           // Pin analogic input
 const float Vref = 5.0;         // Reference Tension (5V)
 const int resolution = 1023;    // ADC resolution 10 bit
-
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
+static bool long_pressed_flag = false;
 
 DeclareAlarm(a1000msec);
 DeclareAlarm(a500msec);
@@ -33,50 +36,51 @@ void loop(void)
 
 int timer_pressure(void)
 {
-    int A0_valueADC = analogRead(pinA0);                     // analogic read A0
-    float A0_voltage = (A0_valueADC * Vref) / resolution;    // Volt
-    
+    int A0_valueADC = analogRead(pinA0);                  // analogic read A0
+    float A0_voltage = (A0_valueADC * Vref) / resolution; // Volt
     if (digitalRead(pinSwitch) == HIGH) { // Button pressed
-        if (!pressed_flag) {
+        if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
             press_time_ms = 0;
         } else {
-            press_time_ms += 100; // Assuming this function is called every 100 ms
-            if (press_time_ms >= 2000) { // 2 seconds threshold
-                ActivateTask(stop);
+            press_time_ms += 100; // function called every 100 ms
+            if (press_time_ms >= Switch_THRESHOLD) {
+                long_pressed_flag = true; // reached 1s continuous press
             }
         }
     } else {
-        pressed_flag = false;
+        pressed_flag = false; // reset all press states
         press_time_ms = 0;
+        long_pressed_flag = false;
     }
 
-    int message = A0_valueADC & 0x3FF;  // bits 0–9
-    if (pressed_flag)
-        message |= (1 << 12);            // bit 12
-    
+    // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
+    int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9
+    if (long_pressed_flag) {
+        message |= (1 << PRESS_FLAG_BIT);        // bit 12
+    }
     return message;
 }
 
-int message_scheduler(int received_message)
+int message_scheduler(int received_message) // Extracting on the receiver side:
 {
     static int scheduled_message = -1;
     static int reference_value = 0;
-    static int difference = 0;
-    difference = abs((received_message & 0x3FF) - reference_value);
+    int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, with 0-9 bits
+    int difference = abs(received_adc_value - reference_value);
     
-    if (received_message & (1 << 12)) {
-        reference_value = received_message & 0x3FF; // ricava il valore analogico di A0, tiene solo i bits 0-9
+    if (received_message & (1 << PRESS_FLAG_BIT)) {
+        reference_value = received_adc_value; // Set new reference value
     } else if (reference_value == 0) {
         scheduled_message = 3; // LED ON
         return scheduled_message;
-    } else if (reference_value != 0 && difference < 100) {
+    } else if (difference < 100) {
         scheduled_message = 0; // LED OFF
         return scheduled_message;
-    } else if (difference >= 100 && difference < 200) {
+    } else if (difference < 200) {
         scheduled_message = 1; // Blink slow
         return scheduled_message;
-    } else if (difference >= 200) {
+    } else { // difference >= 200
         scheduled_message = 2; // Blink fast
         return scheduled_message;
     }
@@ -100,7 +104,7 @@ TASK(TaskM)
     StatusType status = ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
     if (status != E_OK)
         printf("Errore nella ricezione del messaggio!\n");
-    if (received_message & (1 << 12))
+    if (received_message & (1 << PRESS_FLAG_BIT))
         printf("Pulsante premuto per più di 1 secondo!\n");
 
     int scheduled_message = message_scheduler(received_message);
