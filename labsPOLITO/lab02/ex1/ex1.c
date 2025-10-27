@@ -11,9 +11,9 @@ const int resolution = 1023;    // ADC resolution 10 bit
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 
-DeclareAlarm(a1000msec);
+DeclareAlarm(AlarmblinkFast);
 DeclareAlarm(a500msec);
-DeclareAlarm(a250msec);
+DeclareAlarm(AlarmblinkSlow);
 DeclareAlarm(a100msec);
 
 void setup(void)
@@ -117,22 +117,21 @@ TASK(TaskM)
 
 TASK(TaskV)
 {
-    int received_message;
+    int received_message;   //essendo periodico non serve il terminate task qui
     StatusType status = ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
-    if (received_message == 0) {
+    if (received_message == 0) { // LED OFF
         digitalWrite(LED_PIN, LOW);
-        break;
-    } else if (received_message == 1) {
-        TerminateTask(Blink_fast);
+        return;
+    } else if (received_message == 1) { // Blink slow
         ActivateTask(Blink_slow);
-        break;
-    } else if (received_message == 2) {
-        TerminateTask(Blink_slow);
+        return;
+    } else if (received_message == 2) { // Blink fast
         ActivateTask(Blink_fast);
-        break;
-    } else if (received_message == 3) {
+        return;
+    } else if (received_message == 3) { // LED ON
         digitalWrite(LED_PIN, HIGH);
-        break;
+        return;
+    }
     TerminateTask();
 }
 
