@@ -20,10 +20,14 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
+  	RESOURCE Led {
+	RESOURCEPROPERTY = STANDARD;
+ 	 };
+	
 	ALARM AlarmBlinkSlow {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink_slow; };
-		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 750; };
+		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 1000; };
 	};
 
 	ALARM a500msec {
@@ -44,12 +48,6 @@ CPU test {
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
 	};
 
-	ALARM stopper {
-		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = stop; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 6000; CYCLETIME = 0; };
-	};
-
 	MESSAGE MsgCtoM {
 		STATUS = STANDARD;
 		TYPE = UNSPECIFIED;
@@ -65,26 +63,58 @@ CPU test {
 	};
 
 	TASK TaskM {
-		PRIORITY = 2;
+		PRIORITY = 3;
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 	};
 
 	TASK TaskV {
-		PRIORITY = 1;
+		PRIORITY = 2;
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 	};
 	
 	TASK TaskC {
-		PRIORITY = 3;
+		PRIORITY = 4;
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 	};
-	
+
+	TASK Led_OFF {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+	TASK Blink_slow {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+	TASK Blink_fast {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+		TASK Led_ON {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
 	TASK stop {
 		PRIORITY = 99;
 		AUTOSTART = FALSE;

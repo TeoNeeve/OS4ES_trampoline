@@ -14,9 +14,9 @@ static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
 
-DeclareAlarm(AlarmblinkFast);
+DeclareAlarm(AlarmBlinkSlow);
 DeclareAlarm(a500msec);
-DeclareAlarm(AlarmblinkSlow);
+DeclareAlarm(AlarmBlinkFast);
 DeclareAlarm(a100msec);
 
 void setup(void)
@@ -65,13 +65,13 @@ int timer_pressure(void)
 int message_scheduler(int received_message) // Extracting on the receiver side:
 {
     static int scheduled_message = -1;
-    static int reference_value = 0;
+    static int reference_value = -1;
     int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, with 0-9 bits
     int difference = abs(received_adc_value - reference_value);
     
     if (received_message & (1 << PRESS_FLAG_BIT)) {
         reference_value = received_adc_value; // Set new reference value
-    } else if (reference_value == 0) {
+    } else if (reference_value == -1) {
         scheduled_message = 3; // LED ON
         return scheduled_message;
     } else if (difference < 100) {
@@ -121,25 +121,61 @@ TASK(TaskV)
     int received_message;   //essendo periodico non serve il terminate task qui
     StatusType status = ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
     if (received_message == 0) { // LED OFF
-        digitalWrite(LED_PIN, LOW);
+        CancelAlarm(AlarmBlinkSlow);
+        CancelAlarm(AlarmBlinkFast);
+        ActivateTask(Led_OFF);
         return;
     } else if (received_message == 1) { // Blink slow
-        ActivateTask(Blink_slow);
+        CancelAlarm(AlarmBlinkFast);
+        SetRelAlarm(AlarmBlinkSlow);
         return;
     } else if (received_message == 2) { // Blink fast
-        ActivateTask(Blink_fast);
+        CancelAlarm(AlarmBlinkSlow);
+        SetRelAlarm(AlarmBlinkFast);
         return;
-    } else if (received_message == 3) { // LED ON
-        digitalWrite(LED_PIN, HIGH);
+    } else if (received_message == 3) { // LED ON (no ref)
+        CancelAlarm(AlarmBlinkSlow);
+        CancelAlarm(AlarmBlinkFast);
+        ActivateTask(Led_ON);
         return;
     }
     TerminateTask();
 }
 
+TASK(Led_OFF)
+{
+    digitalWrite(LED_PIN, LOW);
+    TerminateTask();
+}
+
+TASK(Blink_slow)
+{   
+    static bool led_state = false;
+    led_state = !led_state;
+    digitalWrite(LED_PIN, led_state ? HIGH : LOW);
+    TerminateTask();
+}
+
+TASK(Blink_fast)
+{   
+    static bool led_state = false;
+    led_state = !led_state;
+    digitalWrite(LED_PIN, led_state ? HIGH : LOW);
+    TerminateTask();
+}
+
+TASK(Led_ON)
+{
+    digitalWrite(LED_PIN, HIGH);
+    TerminateTask();
+}
+
 TASK(stop)
 {
-	CancelAlarm(a1000msec);
-	CancelAlarm(a250msec);
+	CancelAlarm(AlarmBlinkSlow);
+    CancelAlarm(a500msec);
+    CancelAlarm(AlarmBlinkFast);
+	CancelAlarm(a100msec);
 	ShutdownOS(E_OK);
 	TerminateTask();
 }
