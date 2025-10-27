@@ -7,12 +7,12 @@
 #define ADC_10BIT_MASK 0x3FF    // Mask for 10-bit ADC (bits 0–9)
 #define PRESS_FLAG_BIT 12       // Bit position for press flag
 
-const int pinA0 = A0;           // Pin analogic input
-const float Vref = 5.0;         // Reference Tension (5V)
 const int resolution = 1023;    // ADC resolution 10 bit
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
+// ?const int pinA0 = A0;           // Pin analogic input
+// const float Vref = 5.0;         // Reference Tension (5V)
 
 DeclareAlarm(AlarmBlinkSlow);
 DeclareAlarm(a500msec);
@@ -24,6 +24,7 @@ void setup(void)
     init();
     pinMode(LED_PIN, OUTPUT);
     pinMode(pinSwitch, INPUT_PULLUP);
+    pinMode(A0, INPUT);
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -36,8 +37,8 @@ void loop(void)
 
 int timer_pressure(void)
 {
-    int A0_valueADC = analogRead(pinA0);                  // analogic read A0
-    float A0_voltage = (A0_valueADC * Vref) / resolution; // Volt
+    int A0_valueADC = analogRead(A0); // analogic read A0
+    // float A0_voltage = (A0_valueADC * Vref) / resolution; // Volt
     if (digitalRead(pinSwitch) == HIGH) { // Button pressed
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
