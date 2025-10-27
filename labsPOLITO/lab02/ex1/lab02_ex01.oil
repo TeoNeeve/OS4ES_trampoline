@@ -20,7 +20,7 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
-	ALARM a1000msec {
+	ALARM AlarmBlinkSlow {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink_slow; };
 		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 750; };
@@ -29,19 +29,19 @@ CPU test {
 	ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 750; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 500; };
 	};
 
-	ALARM a250msec {
+	ALARM AlarmBlinkFast {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink_fast; };
-		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 250; CYCLETIME = 500; };
+		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 250; };
 	};
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskC; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 750; };
+		ACTION = ACTIVATETASK { TASK = TaskC;TaskV; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
 	};
 
 	ALARM stopper {
