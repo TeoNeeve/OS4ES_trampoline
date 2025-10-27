@@ -1,0 +1,319 @@
+
+{
+  "alarm" : 
+  [
+    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "Blink_fast"
+      },
+      "AUTOSTART" : "false",
+      "COUNTER" : "SystemCounter",
+      "NAME" : "AlarmBlinkFast"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "Blink_slow"
+      },
+      "AUTOSTART" : "false",
+      "COUNTER" : "SystemCounter",
+      "NAME" : "AlarmBlinkSlow"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskC"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 0,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 100
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "a100msec"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskM"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 0,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 500
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "a500msec"
+    }
+  ],
+  "event" : [],
+  "ioc" : [],
+  "isr" : [],
+  "message" : 
+  [
+    
+    {
+      "MESSAGEPROPERTY" : "RECEIVE_QUEUED_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "QUEUESIZE" : 1,
+        "SENDINGMESSAGE" : "MsgCtoM_send"
+      },
+      "NAME" : "MsgCtoM",
+      "NOTIFICATION" : "ACTIVATETASK",
+      "NOTIFICATIONERROR" : "NONE",
+      "NOTIFICATION_S" : 
+      {
+        "TASK" : "TaskM"
+      }
+    },    
+    {
+      "MESSAGEPROPERTY" : "SEND_STATIC_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "CDATATYPE" : "int"
+      },
+      "NAME" : "MsgCtoM_send",
+      "NOTIFICATION" : "NONE",
+      "NOTIFICATIONERROR" : "NONE"
+    },    
+    {
+      "MESSAGEPROPERTY" : "RECEIVE_QUEUED_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "QUEUESIZE" : 1,
+        "SENDINGMESSAGE" : "MsgMtoV_send"
+      },
+      "NAME" : "MsgMtoV",
+      "NOTIFICATION" : "ACTIVATETASK",
+      "NOTIFICATIONERROR" : "NONE",
+      "NOTIFICATION_S" : 
+      {
+        "TASK" : "TaskV"
+      }
+    },    
+    {
+      "MESSAGEPROPERTY" : "SEND_STATIC_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "CDATATYPE" : "int"
+      },
+      "NAME" : "MsgMtoV_send",
+      "NOTIFICATION" : "NONE",
+      "NOTIFICATIONERROR" : "NONE"
+    }
+  ],
+  "resource" : 
+  [
+    
+    {
+      "ISRUSAGE" : [],
+      "KIND" : "Resource",
+      "NAME" : "Led",
+      "PRIORITY" : 2,
+      "RESOURCEPROPERTY" : "STANDARD",
+      "TASKUSAGE" : 
+      [
+        
+        {
+          "VALUE" : "Blink_fast"
+        },        
+        {
+          "VALUE" : "Blink_slow"
+        },        
+        {
+          "VALUE" : "Led_OFF"
+        },        
+        {
+          "VALUE" : "Led_ON"
+        }
+      ]
+    }
+  ],
+  "task" : 
+  [
+    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Led_ON",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "Led"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Led_OFF",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "Led"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Blink_fast",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "Led"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Blink_slow",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "Led"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "MsgMtoV"
+        }
+      ],
+      "NAME" : "TaskV",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 3,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "MsgCtoM"
+        },        
+        {
+          "VALUE" : "MsgMtoV_send"
+        }
+      ],
+      "NAME" : "TaskM",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 4,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "MsgCtoM_send"
+        }
+      ],
+      "NAME" : "TaskC",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 5,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "stop",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 6,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    }
+  ]
+}

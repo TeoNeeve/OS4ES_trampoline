@@ -91,36 +91,26 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 TASK(TaskC)
 {
     int message = timer_pressure();
-    StatusType status = SendMessage(MsgCtoM, &message); // Send message to TaskM function implemented by osek
-    if (status != E_OK)
-        printf("Errore nell’invio del messaggio!\n");
+    SendMessage(MsgCtoM_send, &message); // Send message to TaskM function implemented by osek
     TerminateTask();
 }
 
 TASK(TaskM)
 {
     int received_message;
-    StatusType status = ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
-    if (status != E_OK)
-        printf("Errore nella ricezione del messaggio!\n");
-    if (received_message & (1 << PRESS_FLAG_BIT))
-        printf("Pulsante premuto per più di 1 secondo!\n");
-
+    ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
     int scheduled_message = message_scheduler(received_message);
 
     if (scheduled_message != -1) {
-        status = SendMessage(MsgMtoV, &scheduled_message); // Send message to TaskV function implemented by osek
-        if (status != E_OK)
-            printf("Errore nell’invio del messaggio!\n");
-        }
-    ActivateTask(TaskV);
+        SendMessage(MsgMtoV_send, &scheduled_message); // Send message to TaskV function implemented by osek
+    }
     TerminateTask();
 }
 
 TASK(TaskV)
 {
     int received_message;
-    StatusType status = ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
+    ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
     if (received_message == 0) { // LED OFF
         CancelAlarm(AlarmBlinkSlow);
         CancelAlarm(AlarmBlinkFast);
@@ -128,11 +118,11 @@ TASK(TaskV)
         return;
     } else if (received_message == 1) { // Blink slow
         CancelAlarm(AlarmBlinkFast);
-        SetRelAlarm(AlarmBlinkSlow);
+        SetRelAlarm(AlarmBlinkSlow, 100, 100);
         return;
     } else if (received_message == 2) { // Blink fast
         CancelAlarm(AlarmBlinkSlow);
-        SetRelAlarm(AlarmBlinkFast);
+        SetRelAlarm(AlarmBlinkFast, 25, 25);
         return;
     } else if (received_message == 3) { // LED ON (no ref)
         CancelAlarm(AlarmBlinkSlow);
