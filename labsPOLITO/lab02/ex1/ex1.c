@@ -7,9 +7,12 @@
 #define ADC_10BIT_MASK 0x3FF    // Mask for 10-bit ADC (bits 0–9)
 #define PRESS_FLAG_BIT 12       // Bit position for press flag
 
+extern int my_time;
+
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
+static bool long_press_sent = false; // to send once per long press
 // We use the raw ADC reading (0..1023). Do NOT scale to volts when
 // encoding into the message so the 10-bit range occupies bits 0..9.
 
@@ -37,26 +40,27 @@ void loop(void)
 int timer_pressure(void)
 {
     int A0_valueADC = analogRead(A0); // raw 10-bit ADC read (0..1023)
-    if (digitalRead(pinSwitch) == LOW) { // Button pressed
+    if (digitalRead(pinSwitch) == LOW) { // Button pressed, grounded
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
-            press_time_ms = 0;
-        } else {
-            press_time_ms += 100; // function called every 100 ms
-            if (press_time_ms >= Switch_THRESHOLD) {
-                long_pressed_flag = true; // reached 1s continuous press
-            }
+            press_time_ms = my_time;
+            long_pressed_flag = false; // reset long-press detection for this new press
+            long_press_sent = false;   // allow sending the press-bit once
+        } else if (my_time >= press_time_ms + Switch_THRESHOLD) {
+            long_pressed_flag = true;
         }
     } else {
         pressed_flag = false; // reset all press states
-        press_time_ms = 0;
         long_pressed_flag = false;
+        long_press_sent = false;
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
     int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
-    if (long_pressed_flag) {
+    // Only set the press flag once per long press (edge), not continuously
+    if (long_pressed_flag && !long_press_sent) {
         message |= (1 << PRESS_FLAG_BIT);        // bit 12
+        long_press_sent = true;
     }
     return message;
 }
