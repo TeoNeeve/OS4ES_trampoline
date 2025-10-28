@@ -8,7 +8,7 @@
 #define PRESS_FLAG_BIT 12       // Bit position for press flag
 #define DEBUG_PIN 10            // Debug output pin ######################################
 
-extern int my_time;
+// extern int my_time; usarlo non funziona 
 
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
@@ -43,7 +43,6 @@ int debuggatore(void) // debug output on pin 10 ################################
     static bool debug_led_state = true; 
     debug_led_state = !debug_led_state;
     digitalWrite(DEBUG_PIN, debug_led_state ? HIGH : LOW);
-
 }
 
 int timer_pressure(void)
@@ -52,11 +51,12 @@ int timer_pressure(void)
     if (digitalRead(pinSwitch) == LOW) { // Button pressed, grounded
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
-            press_time_ms = my_time;
-            long_pressed_flag = false; // reset long-press detection for this new press
-            long_press_sent = false;   // allow sending the press-bit once
-        } else if (my_time >= press_time_ms + Switch_THRESHOLD) {
-            long_pressed_flag = true;
+            press_time_ms = 0;
+        } else  {
+            press_time_ms += 100; // taskC called every 100 ms
+            if (press_time_ms >= Switch_THRESHOLD) {
+                long_pressed_flag = true; // reached 1s continuous press
+            }
         }
     } else {
         pressed_flag = false; // reset all press states
@@ -69,7 +69,7 @@ int timer_pressure(void)
     // Only set the press flag once per long press (edge), not continuously
     if (long_pressed_flag && !long_press_sent) {
         message |= (1 << PRESS_FLAG_BIT);        // bit 12
-        long_press_sent = true;
+        long_press_sent = true; // mark as sent
     }
     return message;
 }
