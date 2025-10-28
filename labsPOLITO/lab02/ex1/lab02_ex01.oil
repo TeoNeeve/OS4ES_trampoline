@@ -33,8 +33,8 @@ CPU test {
 	ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 500; };
-	};
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 500; };
+	}; /* ho messo start a 50ms per avere un migliore task scheduling */
 
 	ALARM AlarmBlinkFast {
 		COUNTER = SystemCounter;
@@ -60,7 +60,7 @@ CPU test {
 			SENDINGMESSAGE = MsgCtoM_send;
 			QUEUESIZE = 1;
 		};
-		NOTIFICATION = ACTIVATETASK { TASK = TaskM; };
+		/* NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; questo non serve viene chiamato ogni 500ms*/
 	};
 
 	/* Message from TaskM to TaskV: TaskM sends an int, TaskV receives queued */

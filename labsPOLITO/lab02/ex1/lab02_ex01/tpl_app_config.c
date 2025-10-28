@@ -1493,7 +1493,7 @@ VAR(tpl_time_obj, OS_VAR) a500msec_alarm_desc = {
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
     /* cycle                        */  500,
-    /* date                         */  0,
+    /* date                         */  50,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
@@ -1526,19 +1526,6 @@ CONSTP2VAR(tpl_time_obj, AUTOMATIC, OS_APPL_DATA)
 /*-----------------------------------------------------------------------------
  * Action of message MsgCtoM
  */
-
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-CONST(tpl_task_activation_action, OS_CONST) MsgCtoM_action = {
-  {
-    /* action function  */  tpl_action_activate_task
-  },
-  /* task id            */  TaskM_id
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
 /*-----------------------------------------------------------------------------
  * ALWAYS filter of message object MsgCtoM
  */
@@ -1577,7 +1564,7 @@ VAR(tpl_queue_dyn, OS_VAR) MsgCtoM_dyn_queue = {
 CONST(tpl_internal_receiving_queued_mo, OS_CONST) MsgCtoM_message = {
   { /* data receiving mo struct   */
     { /* base receiving mo struct */
-      /* notification pointer     */  (tpl_action *)&MsgCtoM_action,
+      /* notification pointer     */  NULL,
       /* next receiving mo        */  NULL
     },
     /*  receiving function      */  (tpl_receiving_func)tpl_receive_static_internal_queued_message,

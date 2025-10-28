@@ -7,12 +7,11 @@
 #define ADC_10BIT_MASK 0x3FF    // Mask for 10-bit ADC (bits 0–9)
 #define PRESS_FLAG_BIT 12       // Bit position for press flag
 
-const int resolution = 1023;    // ADC resolution 10 bit
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
-// ?const int pinA0 = A0;           // Pin analogic input
-const int Vref = 5;         // Reference Tension (5V)
+// We use the raw ADC reading (0..1023). Do NOT scale to volts when
+// encoding into the message so the 10-bit range occupies bits 0..9.
 
 DeclareAlarm(AlarmBlinkSlow);
 DeclareAlarm(a500msec);
@@ -37,9 +36,8 @@ void loop(void)
 
 int timer_pressure(void)
 {
-    int A0_valueADC = analogRead(A0); // analogic read A0
-    int A0_voltage = (A0_valueADC * Vref) / resolution;
-    if (digitalRead(pinSwitch) == HIGH) { // Button pressed
+    int A0_valueADC = analogRead(A0); // raw 10-bit ADC read (0..1023)
+    if (digitalRead(pinSwitch) == LOW) { // Button pressed
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
             press_time_ms = 0;
@@ -56,7 +54,7 @@ int timer_pressure(void)
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
-    int message = A0_voltage & ADC_10BIT_MASK;  // bits 0–9
+    int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
     if (long_pressed_flag) {
         message |= (1 << PRESS_FLAG_BIT);        // bit 12
     }
@@ -67,25 +65,28 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 {
     static int scheduled_message = -1;
     static int reference_value = -1;
-    int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, with 0-9 bits
-    int difference = abs(received_adc_value - reference_value);
-    
+    int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, bits 0..9
+
+    // If the press flag is set, update the reference and do not send a
+    // blink command to TaskV (return -1 -> no SendMessage from TaskM).
     if (received_message & (1 << PRESS_FLAG_BIT)) {
         reference_value = received_adc_value; // Set new reference value
-    } else if (reference_value == -1) {
-        scheduled_message = 3; // LED ON
-        return scheduled_message;
-    } else if (difference < 100) {
+        return 0; // Refecence just set, turn LED OFF
+    }
+
+    // If we don't have a reference yet, ask TaskV to turn LED ON (code 3)
+    if (reference_value == -1) {
+        return 3; // LED ON (no reference yet)
+    }
+
+    int difference = abs(received_adc_value - reference_value);
+    if (difference < 100) {
         scheduled_message = 0; // LED OFF
-        return scheduled_message;
     } else if (difference < 200) {
         scheduled_message = 1; // Blink slow
-        return scheduled_message;
-    } else { // difference >= 200
+    } else {
         scheduled_message = 2; // Blink fast
-        return scheduled_message;
     }
-    
     return scheduled_message;
 }
 

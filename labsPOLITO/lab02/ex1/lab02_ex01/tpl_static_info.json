@@ -54,7 +54,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 0,
+        "ALARMTIME" : 50,
         "APPMODE" : 
         [
           
@@ -82,12 +82,8 @@
         "SENDINGMESSAGE" : "MsgCtoM_send"
       },
       "NAME" : "MsgCtoM",
-      "NOTIFICATION" : "ACTIVATETASK",
-      "NOTIFICATIONERROR" : "NONE",
-      "NOTIFICATION_S" : 
-      {
-        "TASK" : "TaskM"
-      }
+      "NOTIFICATION" : "NONE",
+      "NOTIFICATIONERROR" : "NONE"
     },    
     {
       "MESSAGEPROPERTY" : "SEND_STATIC_INTERNAL",
