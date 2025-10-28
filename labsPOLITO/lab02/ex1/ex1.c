@@ -12,7 +12,7 @@ static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
 // ?const int pinA0 = A0;           // Pin analogic input
-// const float Vref = 5.0;         // Reference Tension (5V)
+const int Vref = 5;         // Reference Tension (5V)
 
 DeclareAlarm(AlarmBlinkSlow);
 DeclareAlarm(a500msec);
@@ -38,7 +38,7 @@ void loop(void)
 int timer_pressure(void)
 {
     int A0_valueADC = analogRead(A0); // analogic read A0
-    // float A0_voltage = (A0_valueADC * Vref) / resolution; // Volt
+    int A0_voltage = (A0_valueADC * Vref) / resolution;
     if (digitalRead(pinSwitch) == HIGH) { // Button pressed
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
@@ -56,7 +56,7 @@ int timer_pressure(void)
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
-    int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9
+    int message = A0_voltage & ADC_10BIT_MASK;  // bits 0–9
     if (long_pressed_flag) {
         message |= (1 << PRESS_FLAG_BIT);        // bit 12
     }
@@ -119,11 +119,11 @@ TASK(TaskV)
         return;
     } else if (received_message == 1) { // Blink slow
         CancelAlarm(AlarmBlinkFast);
-        SetRelAlarm(AlarmBlinkSlow, 100, 100);
+        SetRelAlarm(AlarmBlinkSlow, 100, 100); // period 1s
         return;
     } else if (received_message == 2) { // Blink fast
         CancelAlarm(AlarmBlinkSlow);
-        SetRelAlarm(AlarmBlinkFast, 25, 25);
+        SetRelAlarm(AlarmBlinkFast, 25, 25); // period 250 ms
         return;
     } else if (received_message == 3) { // LED ON (no ref)
         CancelAlarm(AlarmBlinkSlow);
