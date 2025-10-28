@@ -20,71 +20,121 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
+  	RESOURCE Led {
+	RESOURCEPROPERTY = STANDARD;
+ 	 };
+	
 	ALARM AlarmBlinkSlow {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink_slow; };
-		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 750; };
+		AUTOSTART = FALSE;
 	};
 
 	ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 500; };
-	};
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 500; };
+	}; /* ho messo start a 50ms per avere un migliore task scheduling */
 
 	ALARM AlarmBlinkFast {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink_fast; };
-		AUTOSTART = FALSE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 250; };
+		AUTOSTART = FALSE;
 	};
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskC;TaskV; };
+		ACTION = ACTIVATETASK { TASK = TaskC; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
 	};
 
-	ALARM stopper {
-		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = stop; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 6000; CYCLETIME = 0; };
+	/* Message from TaskC to TaskM: TaskC sends an int, TaskM receives queued */
+	MESSAGE MsgCtoM_send {
+		MESSAGEPROPERTY = SEND_STATIC_INTERNAL {
+			CDATATYPE = "int";
+		};
 	};
 
 	MESSAGE MsgCtoM {
-		STATUS = STANDARD;
-		TYPE = UNSPECIFIED;
-		RECEIVER = TaskM;
-		SENDER = TaskC;
+		MESSAGEPROPERTY = RECEIVE_QUEUED_INTERNAL {
+			SENDINGMESSAGE = MsgCtoM_send;
+			QUEUESIZE = 1;
+		};
+		/* NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; questo non serve viene chiamato ogni 500ms*/
+	};
+
+	/* Message from TaskM to TaskV: TaskM sends an int, TaskV receives queued */
+	MESSAGE MsgMtoV_send {
+		MESSAGEPROPERTY = SEND_STATIC_INTERNAL {
+			CDATATYPE = "int";
+		};
 	};
 
 	MESSAGE MsgMtoV {
-		STATUS = STANDARD;
-		TYPE = UNSPECIFIED;
-		RECEIVER = TaskV;
-		SENDER = TaskM;
+		MESSAGEPROPERTY = RECEIVE_QUEUED_INTERNAL {
+			SENDINGMESSAGE = MsgMtoV_send;
+			QUEUESIZE = 1;
+		};
+		NOTIFICATION = ACTIVATETASK { TASK = TaskV; };
 	};
 
 	TASK TaskM {
-		PRIORITY = 2;
-		AUTOSTART = TRUE { APPMODE = stdAppmode; };
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-	};
-
-	TASK TaskV {
-		PRIORITY = 1;
-		AUTOSTART = FALSE;
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-	};
-	
-	TASK TaskC {
 		PRIORITY = 3;
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
+		MESSAGE = MsgCtoM; /* receive from TaskC */
+		MESSAGE = MsgMtoV_send; /* can send to TaskV */
+	};
+
+	TASK TaskV {
+		PRIORITY = 2;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		MESSAGE = MsgMtoV; /* receive from TaskM */
 	};
 	
+	TASK TaskC {
+		PRIORITY = 4;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		MESSAGE = MsgCtoM_send; /* send to TaskM */
+	};
+
+	TASK Led_OFF {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+	TASK Blink_slow {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+	TASK Blink_fast {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
+		TASK Led_ON {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = Led;
+	};
+
 	TASK stop {
 		PRIORITY = 99;
 		AUTOSTART = FALSE;
