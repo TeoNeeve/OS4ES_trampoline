@@ -96,9 +96,9 @@
  *   right with the rank set to 0;
  * - RANK_MASK is the mask to get only the rank.
  */
-#define PRIORITY_SHIFT                   3
-#define PRIORITY_MASK                    56
-#define RANK_MASK                        7
+#define PRIORITY_SHIFT                   2
+#define PRIORITY_MASK                    28
+#define RANK_MASK                        3
 
 /*=============================================================================
  * Number of objects used by the application
@@ -109,12 +109,12 @@
 /*-----------------------------------------------------------------------------
  * Number of priority levels
  */
-#define PRIO_LEVEL_COUNT       7
+#define PRIO_LEVEL_COUNT       6
 
 /*-----------------------------------------------------------------------------
  * Number of tasks
  */
-#define TASK_COUNT             8
+#define TASK_COUNT             7
 
 /*-----------------------------------------------------------------------------
  * Number of spinlocks
@@ -134,12 +134,12 @@
 /*-----------------------------------------------------------------------------
  * Number of alarms
  */
-#define ALARM_COUNT            4
+#define ALARM_COUNT            3
 
 /*-----------------------------------------------------------------------------
  * Number of regular resources (standard and linked) plus RES_SCHEDULER if used 
  */
-#define RESOURCE_COUNT         2 
+#define RESOURCE_COUNT         1 
 
 /*-----------------------------------------------------------------------------
  * Number of events
@@ -192,7 +192,7 @@
 /*-----------------------------------------------------------------------------
  * Priority of RES_SCHEDULER
  */
-#define RES_SCHEDULER_PRIORITY 7
+#define RES_SCHEDULER_PRIORITY 6
 
 #define IDLE_TASK_ID    TASK_COUNT + ISR_COUNT
 

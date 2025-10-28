@@ -16,9 +16,8 @@ static bool long_press_sent = false; // to send once per long press
 // We use the raw ADC reading (0..1023). Do NOT scale to volts when
 // encoding into the message so the 10-bit range occupies bits 0..9.
 
-DeclareAlarm(AlarmBlinkSlow);
+DeclareAlarm(AlarmBlink);
 DeclareAlarm(a500msec);
-DeclareAlarm(AlarmBlinkFast);
 DeclareAlarm(a100msec);
 
 void setup(void)
@@ -118,23 +117,17 @@ TASK(TaskV)
     int received_message;
     ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
     if (received_message == 0) { // LED OFF
-        CancelAlarm(AlarmBlinkSlow);
-        CancelAlarm(AlarmBlinkFast);
+        CancelAlarm(AlarmBlink);
         ActivateTask(Led_OFF);
-        return;
     } else if (received_message == 1) { // Blink slow
-        CancelAlarm(AlarmBlinkFast);
-        SetRelAlarm(AlarmBlinkSlow, 100, 100); // period 1s
-        return;
+        CancelAlarm(AlarmBlink);
+        SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
     } else if (received_message == 2) { // Blink fast
-        CancelAlarm(AlarmBlinkSlow);
-        SetRelAlarm(AlarmBlinkFast, 25, 25); // period 250 ms
-        return;
+        CancelAlarm(AlarmBlink);
+        SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
     } else if (received_message == 3) { // LED ON (no ref)
-        CancelAlarm(AlarmBlinkSlow);
-        CancelAlarm(AlarmBlinkFast);
+        CancelAlarm(AlarmBlink);
         ActivateTask(Led_ON);
-        return;
     }
     TerminateTask();
 }
@@ -145,15 +138,7 @@ TASK(Led_OFF)
     TerminateTask();
 }
 
-TASK(Blink_slow)
-{   
-    static bool led_state = false;
-    led_state = !led_state;
-    digitalWrite(LED_PIN, led_state ? HIGH : LOW);
-    TerminateTask();
-}
-
-TASK(Blink_fast)
+TASK(Blink)
 {   
     static bool led_state = false;
     led_state = !led_state;
@@ -169,9 +154,8 @@ TASK(Led_ON)
 
 TASK(stop)
 {
-	CancelAlarm(AlarmBlinkSlow);
+	CancelAlarm(AlarmBlink);
     CancelAlarm(a500msec);
-    CancelAlarm(AlarmBlinkFast);
 	CancelAlarm(a100msec);
 	ShutdownOS(E_OK);
 	TerminateTask();

@@ -20,13 +20,14 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
+/*
   	RESOURCE Led {
 	RESOURCEPROPERTY = STANDARD;
  	 };
-	
-	ALARM AlarmBlinkSlow {
+*/
+	ALARM AlarmBlink {
 		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = Blink_slow; };
+		ACTION = ACTIVATETASK { TASK = Blink; };
 		AUTOSTART = FALSE;
 	};
 
@@ -35,12 +36,6 @@ CPU test {
 		ACTION = ACTIVATETASK { TASK = TaskM; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 500; };
 	}; /* ho messo start a 50ms per avere un migliore task scheduling */
-
-	ALARM AlarmBlinkFast {
-		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = Blink_fast; };
-		AUTOSTART = FALSE;
-	};
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
@@ -108,31 +103,23 @@ CPU test {
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		RESOURCE = Led;
+		/*RESOURCE = Led;*/
 	};
 
-	TASK Blink_slow {
+	TASK Blink {
 		PRIORITY = 1;
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		RESOURCE = Led;
+		/*RESOURCE = Led;*/
 	};
 
-	TASK Blink_fast {
+	TASK Led_ON {
 		PRIORITY = 1;
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		RESOURCE = Led;
-	};
-
-		TASK Led_ON {
-		PRIORITY = 1;
-		AUTOSTART = FALSE;
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-		RESOURCE = Led;
+		/*RESOURCE = Led;*/
 	};
 
 	TASK stop {
