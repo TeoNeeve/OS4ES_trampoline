@@ -22,7 +22,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 0,
+        "ALARMTIME" : 50,
         "APPMODE" : 
         [
           
@@ -44,7 +44,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 50,
+        "ALARMTIME" : 550,
         "APPMODE" : 
         [
           

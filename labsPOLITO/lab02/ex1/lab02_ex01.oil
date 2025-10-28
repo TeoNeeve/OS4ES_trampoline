@@ -34,13 +34,13 @@ CPU test {
 	ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 500; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 550; CYCLETIME = 500; };
 	}; /* ho messo start a 50ms per avere un migliore task scheduling */
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskC; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 100; };
 	};
 
 	/* Message from TaskC to TaskM: TaskC sends an int, TaskM receives queued */
