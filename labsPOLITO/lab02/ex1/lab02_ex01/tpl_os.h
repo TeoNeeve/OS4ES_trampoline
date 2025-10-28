@@ -466,17 +466,14 @@ FUNC(StatusType, COM_CODE) GetMessageStatus(
  * Objects declared in the OIL/ARXML file
  */
 DeclareApplicationMode(stdAppmode);
-DeclareTask(Blink_fast);
-DeclareTask(Blink_slow);
+DeclareTask(Blink);
 DeclareTask(Led_OFF);
 DeclareTask(Led_ON);
 DeclareTask(TaskC);
 DeclareTask(TaskM);
 DeclareTask(TaskV);
 DeclareTask(stop);
-DeclareResource(Led);
-DeclareAlarm(AlarmBlinkFast);
-DeclareAlarm(AlarmBlinkSlow);
+DeclareAlarm(AlarmBlink);
 DeclareAlarm(a100msec);
 DeclareAlarm(a500msec);
 DeclareMessage(MsgCtoM);

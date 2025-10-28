@@ -62,9 +62,8 @@ CONST(tpl_application_mode, OS_CONST) stdAppmode = 0; /* mask = 1 */
 CONST(tpl_application_mode, OS_CONST) OSDEFAULTAPPMODE = 0;
 CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   0 /* task Led_ON :  */ ,
+  0 /* task Blink :  */ ,
   0 /* task Led_OFF :  */ ,
-  0 /* task Blink_fast :  */ ,
-  0 /* task Blink_slow :  */ ,
   0 /* task TaskV :  */ ,
   1 /* task TaskM : stdAppmode */ ,
   1 /* task TaskC : stdAppmode */ ,
@@ -72,22 +71,13 @@ CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
 };
 
 CONST(tpl_appmode_mask, OS_CONST) tpl_alarm_app_mode[ALARM_COUNT] = {
-  0 /* alarm AlarmBlinkFast :  */ ,
-  0 /* alarm AlarmBlinkSlow :  */ ,
+  0 /* alarm AlarmBlink :  */ ,
   1 /* alarm a100msec : stdAppmode */ ,
   1 /* alarm a500msec : stdAppmode */ 
 };
 
 #define API_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
-
-/*=============================================================================
- * Declaration of resources IDs
- */
-
-/* Resource Led */
-#define Led_id 0
-CONST(ResourceType, AUTOMATIC) Led = Led_id;
 
 /*=============================================================================
  * Declaration of processes IDs
@@ -97,52 +87,44 @@ CONST(ResourceType, AUTOMATIC) Led = Led_id;
 #define Led_ON_id 0
 CONST(TaskType, AUTOMATIC) Led_ON = Led_ON_id;
 
+/* Task Blink identifier */
+#define Blink_id 1
+CONST(TaskType, AUTOMATIC) Blink = Blink_id;
+
 /* Task Led_OFF identifier */
-#define Led_OFF_id 1
+#define Led_OFF_id 2
 CONST(TaskType, AUTOMATIC) Led_OFF = Led_OFF_id;
 
-/* Task Blink_fast identifier */
-#define Blink_fast_id 2
-CONST(TaskType, AUTOMATIC) Blink_fast = Blink_fast_id;
-
-/* Task Blink_slow identifier */
-#define Blink_slow_id 3
-CONST(TaskType, AUTOMATIC) Blink_slow = Blink_slow_id;
-
 /* Task TaskV identifier */
-#define TaskV_id 4
+#define TaskV_id 3
 CONST(TaskType, AUTOMATIC) TaskV = TaskV_id;
 
 /* Task TaskM identifier */
-#define TaskM_id 5
+#define TaskM_id 4
 CONST(TaskType, AUTOMATIC) TaskM = TaskM_id;
 
 /* Task TaskC identifier */
-#define TaskC_id 6
+#define TaskC_id 5
 CONST(TaskType, AUTOMATIC) TaskC = TaskC_id;
 
 /* Task stop identifier */
-#define stop_id 7
+#define stop_id 6
 CONST(TaskType, AUTOMATIC) stop = stop_id;
 
 /*=============================================================================
  * Declaration of Alarm IDs
  */
 
-/* Alarm AlarmBlinkFast identifier */
-#define AlarmBlinkFast_id 0
-CONST(AlarmType, AUTOMATIC) AlarmBlinkFast = AlarmBlinkFast_id;
-
-/* Alarm AlarmBlinkSlow identifier */
-#define AlarmBlinkSlow_id 1
-CONST(AlarmType, AUTOMATIC) AlarmBlinkSlow = AlarmBlinkSlow_id;
+/* Alarm AlarmBlink identifier */
+#define AlarmBlink_id 0
+CONST(AlarmType, AUTOMATIC) AlarmBlink = AlarmBlink_id;
 
 /* Alarm a100msec identifier */
-#define a100msec_id 2
+#define a100msec_id 1
 CONST(AlarmType, AUTOMATIC) a100msec = a100msec_id;
 
 /* Alarm a500msec identifier */
-#define a500msec_id 3
+#define a500msec_id 2
 CONST(AlarmType, AUTOMATIC) a500msec = a500msec_id;
 
 /*=============================================================================
@@ -172,34 +154,6 @@ CONST(MessageIdentifier, AUTOMATIC) MsgMtoV_send = MsgMtoV_send_id;
 #define API_STOP_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
-/*=============================================================================
- * Definition and initialization of regular Resource related structures
- */
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-/*-----------------------------------------------------------------------------
- * Resource descriptor of resource Led
- *
- * Tasks which use this resource :
- * Blink_fast
- * Blink_slow
- * Led_OFF
- * Led_ON
- */
-VAR(tpl_resource, OS_VAR) Led_rez_desc = {
-  /* ceiling priority of the resource */  2,
-  /* owner previous priority          */  0,
-  /* owner of the resource            */  INVALID_PROC_ID,
-#if RESOURCE_BELONGS_TO_OS_APP == YES
-  /* OS Application id                */  
-#endif
-
-  /* next resource in the list        */  NULL
-};
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
 /**
  * The scheduler resource descriptor.
  * One scheduler resource is defined per core.
@@ -226,7 +180,6 @@ VAR(tpl_resource, OS_VAR) res_sched_rez_desc = {
 #include "tpl_memmap.h"
 CONSTP2VAR(tpl_resource, AUTOMATIC, OS_APPL_DATA)
 tpl_resource_table[RESOURCE_COUNT] = {
-  &Led_rez_desc,
   &res_sched_rez_desc
 };
 
@@ -455,11 +408,6 @@ avr_context Led_ON_int_context;
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
-/*
- * Resources used by task Led_ON
- *
- * Led
- */
 
 /*
  * Static descriptor of task Led_ON
@@ -496,6 +444,107 @@ CONST(tpl_proc_static, OS_CONST) Led_ON_task_stat_desc = {
  * Dynamic descriptor of task Led_ON
  */
 VAR(tpl_proc, OS_VAR) Led_ON_task_desc = {
+  /* resources                      */  NULL,
+#if WITH_OSAPPLICATION == YES
+  /* if > 0 the process is trusted  */  0,    
+#endif /* WITH_OSAPPLICATION */
+  /* activate count                 */  0,
+  /* task priority                  */  1,
+  /* task state                     */  SUSPENDED
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Task Blink descriptor
+ */
+#define APP_Task_Blink_START_SEC_CODE
+
+#include "tpl_memmap.h"
+/*
+ * Task Blink function prototype
+ */
+
+FUNC(void, OS_APPL_CODE) Blink_function(void);
+#define APP_Task_Blink_STOP_SEC_CODE
+
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Target specific structures
+ */
+
+/*
+ * Task Blink stack
+ *
+ */
+#define APP_Task_Blink_START_SEC_STACK
+#include "tpl_memmap.h"
+tpl_stack_word Blink_stack_zone[128/sizeof(tpl_stack_word)];
+#define APP_Task_Blink_STOP_SEC_STACK
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define Blink_STACK { Blink_stack_zone, 128 }
+
+/*
+ * Task Blink context
+ */
+avr_context Blink_int_context;
+#define Blink_CONTEXT &Blink_int_context
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+
+
+/*
+  No timing protection
+ */
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+/*
+ * Static descriptor of task Blink
+ */
+CONST(tpl_proc_static, OS_CONST) Blink_task_stat_desc = {
+  /* context                  */  Blink_CONTEXT,
+  /* stack                    */  Blink_STACK,
+  /* entry point (function)   */  Blink_function,
+  /* internal ressource       */  NULL,
+  /* task id                  */  Blink_id,
+#if WITH_OSAPPLICATION == YES
+  /* OS application id        */  
+#endif
+  /* task base priority       */  1,
+  /* max activation count     */  1,
+  /* task type                */  TASK_BASIC,
+#if WITH_AUTOSAR_TIMING_PROTECTION == YES
+
+  /* execution budget */        0,
+  /* timeframe        */        0, 
+  /* pointer to the timing
+     protection descriptor    */ NULL
+
+#endif
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*
+ * Dynamic descriptor of task Blink
+ */
+VAR(tpl_proc, OS_VAR) Blink_task_desc = {
   /* resources                      */  NULL,
 #if WITH_OSAPPLICATION == YES
   /* if > 0 the process is trusted  */  0,    
@@ -561,11 +610,6 @@ avr_context Led_OFF_int_context;
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
-/*
- * Resources used by task Led_OFF
- *
- * Led
- */
 
 /*
  * Static descriptor of task Led_OFF
@@ -602,218 +646,6 @@ CONST(tpl_proc_static, OS_CONST) Led_OFF_task_stat_desc = {
  * Dynamic descriptor of task Led_OFF
  */
 VAR(tpl_proc, OS_VAR) Led_OFF_task_desc = {
-  /* resources                      */  NULL,
-#if WITH_OSAPPLICATION == YES
-  /* if > 0 the process is trusted  */  0,    
-#endif /* WITH_OSAPPLICATION */
-  /* activate count                 */  0,
-  /* task priority                  */  1,
-  /* task state                     */  SUSPENDED
-};
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Task Blink_fast descriptor
- */
-#define APP_Task_Blink_fast_START_SEC_CODE
-
-#include "tpl_memmap.h"
-/*
- * Task Blink_fast function prototype
- */
-
-FUNC(void, OS_APPL_CODE) Blink_fast_function(void);
-#define APP_Task_Blink_fast_STOP_SEC_CODE
-
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Target specific structures
- */
-
-/*
- * Task Blink_fast stack
- *
- */
-#define APP_Task_Blink_fast_START_SEC_STACK
-#include "tpl_memmap.h"
-tpl_stack_word Blink_fast_stack_zone[128/sizeof(tpl_stack_word)];
-#define APP_Task_Blink_fast_STOP_SEC_STACK
-#include "tpl_memmap.h"
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-#define Blink_fast_STACK { Blink_fast_stack_zone, 128 }
-
-/*
- * Task Blink_fast context
- */
-avr_context Blink_fast_int_context;
-#define Blink_fast_CONTEXT &Blink_fast_int_context
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-
-
-/*
-  No timing protection
- */
-
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*
- * Resources used by task Blink_fast
- *
- * Led
- */
-
-/*
- * Static descriptor of task Blink_fast
- */
-CONST(tpl_proc_static, OS_CONST) Blink_fast_task_stat_desc = {
-  /* context                  */  Blink_fast_CONTEXT,
-  /* stack                    */  Blink_fast_STACK,
-  /* entry point (function)   */  Blink_fast_function,
-  /* internal ressource       */  NULL,
-  /* task id                  */  Blink_fast_id,
-#if WITH_OSAPPLICATION == YES
-  /* OS application id        */  
-#endif
-  /* task base priority       */  1,
-  /* max activation count     */  1,
-  /* task type                */  TASK_BASIC,
-#if WITH_AUTOSAR_TIMING_PROTECTION == YES
-
-  /* execution budget */        0,
-  /* timeframe        */        0, 
-  /* pointer to the timing
-     protection descriptor    */ NULL
-
-#endif
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-/*
- * Dynamic descriptor of task Blink_fast
- */
-VAR(tpl_proc, OS_VAR) Blink_fast_task_desc = {
-  /* resources                      */  NULL,
-#if WITH_OSAPPLICATION == YES
-  /* if > 0 the process is trusted  */  0,    
-#endif /* WITH_OSAPPLICATION */
-  /* activate count                 */  0,
-  /* task priority                  */  1,
-  /* task state                     */  SUSPENDED
-};
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Task Blink_slow descriptor
- */
-#define APP_Task_Blink_slow_START_SEC_CODE
-
-#include "tpl_memmap.h"
-/*
- * Task Blink_slow function prototype
- */
-
-FUNC(void, OS_APPL_CODE) Blink_slow_function(void);
-#define APP_Task_Blink_slow_STOP_SEC_CODE
-
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Target specific structures
- */
-
-/*
- * Task Blink_slow stack
- *
- */
-#define APP_Task_Blink_slow_START_SEC_STACK
-#include "tpl_memmap.h"
-tpl_stack_word Blink_slow_stack_zone[128/sizeof(tpl_stack_word)];
-#define APP_Task_Blink_slow_STOP_SEC_STACK
-#include "tpl_memmap.h"
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-#define Blink_slow_STACK { Blink_slow_stack_zone, 128 }
-
-/*
- * Task Blink_slow context
- */
-avr_context Blink_slow_int_context;
-#define Blink_slow_CONTEXT &Blink_slow_int_context
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-
-
-/*
-  No timing protection
- */
-
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*
- * Resources used by task Blink_slow
- *
- * Led
- */
-
-/*
- * Static descriptor of task Blink_slow
- */
-CONST(tpl_proc_static, OS_CONST) Blink_slow_task_stat_desc = {
-  /* context                  */  Blink_slow_CONTEXT,
-  /* stack                    */  Blink_slow_STACK,
-  /* entry point (function)   */  Blink_slow_function,
-  /* internal ressource       */  NULL,
-  /* task id                  */  Blink_slow_id,
-#if WITH_OSAPPLICATION == YES
-  /* OS application id        */  
-#endif
-  /* task base priority       */  1,
-  /* max activation count     */  1,
-  /* task type                */  TASK_BASIC,
-#if WITH_AUTOSAR_TIMING_PROTECTION == YES
-
-  /* execution budget */        0,
-  /* timeframe        */        0, 
-  /* pointer to the timing
-     protection descriptor    */ NULL
-
-#endif
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-/*
- * Dynamic descriptor of task Blink_slow
- */
-VAR(tpl_proc, OS_VAR) Blink_slow_task_desc = {
   /* resources                      */  NULL,
 #if WITH_OSAPPLICATION == YES
   /* if > 0 the process is trusted  */  0,    
@@ -892,7 +724,7 @@ CONST(tpl_proc_static, OS_CONST) TaskV_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  3,
+  /* task base priority       */  2,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -920,7 +752,7 @@ VAR(tpl_proc, OS_VAR) TaskV_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  3,
+  /* task priority                  */  2,
   /* task state                     */  SUSPENDED
 };
 
@@ -993,7 +825,7 @@ CONST(tpl_proc_static, OS_CONST) TaskM_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  4,
+  /* task base priority       */  3,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -1021,7 +853,7 @@ VAR(tpl_proc, OS_VAR) TaskM_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  4,
+  /* task priority                  */  3,
   /* task state                     */  AUTOSTART
 };
 
@@ -1094,7 +926,7 @@ CONST(tpl_proc_static, OS_CONST) TaskC_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  5,
+  /* task base priority       */  4,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -1122,7 +954,7 @@ VAR(tpl_proc, OS_VAR) TaskC_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  5,
+  /* task priority                  */  4,
   /* task state                     */  AUTOSTART
 };
 
@@ -1195,7 +1027,7 @@ CONST(tpl_proc_static, OS_CONST) stop_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  6,
+  /* task base priority       */  5,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -1223,7 +1055,7 @@ VAR(tpl_proc, OS_VAR) stop_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  6,
+  /* task priority                  */  5,
   /* task state                     */  SUSPENDED
 };
 
@@ -1250,9 +1082,8 @@ FUNC(void, OS_CODE) tpl_avr_ISR2_handler(CONST(uint16, AUTOMATIC) id);
 CONSTP2CONST(tpl_proc_static, AUTOMATIC, OS_APPL_DATA)
 tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Led_ON_task_stat_desc,
+  &Blink_task_stat_desc,
   &Led_OFF_task_stat_desc,
-  &Blink_fast_task_stat_desc,
-  &Blink_slow_task_stat_desc,
   &TaskV_task_stat_desc,
   &TaskM_task_stat_desc,
   &TaskC_task_stat_desc,
@@ -1263,9 +1094,8 @@ tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 CONSTP2VAR(tpl_proc, AUTOMATIC, OS_APPL_DATA)
 tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Led_ON_task_desc,
+  &Blink_task_desc,
   &Led_OFF_task_desc,
-  &Blink_fast_task_desc,
-  &Blink_slow_task_desc,
   &TaskV_task_desc,
   &TaskM_task_desc,
   &TaskC_task_desc,
@@ -1281,20 +1111,20 @@ tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
  * Definition and initialization of Alarm related structures
  */
 /*-----------------------------------------------------------------------------
- * Alarm AlarmBlinkFast descriptor
+ * Alarm AlarmBlink descriptor
  *
- * This alarm does the activation of task Blink_fast
+ * This alarm does the activation of task Blink
  */
 
 
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
-CONST(tpl_task_activation_action, OS_CONST) AlarmBlinkFast_action = {
+CONST(tpl_task_activation_action, OS_CONST) AlarmBlink_action = {
   {
     /* action function  */  tpl_action_activate_task
   },
-  /* task id            */  Blink_fast_id
+  /* task id            */  Blink_id
 };
 
 #define OS_STOP_SEC_CONST_UNSPECIFIED
@@ -1303,18 +1133,18 @@ CONST(tpl_task_activation_action, OS_CONST) AlarmBlinkFast_action = {
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
-CONST(tpl_alarm_static, OS_CONST) AlarmBlinkFast_static = {
+CONST(tpl_alarm_static, OS_CONST) AlarmBlink_static = {
   {
     /* pointer to counter           */  &SystemCounter_counter_desc,
     /* pointer to the expiration    */  tpl_raise_alarm
 #if (WITH_ID == YES)
-    /* id of the alarm for tracing  */  , AlarmBlinkFast_id
+    /* id of the alarm for tracing  */  , AlarmBlink_id
 #endif
 #if WITH_OSAPPLICATION == YES
     /* OS application id            */  , 
 #endif
   },
-  /* action of the alarm  */  (tpl_action *)&AlarmBlinkFast_action
+  /* action of the alarm  */  (tpl_action *)&AlarmBlink_action
 };
 
 #define OS_STOP_SEC_CONST_UNSPECIFIED
@@ -1323,63 +1153,8 @@ CONST(tpl_alarm_static, OS_CONST) AlarmBlinkFast_static = {
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_time_obj, OS_VAR) AlarmBlinkFast_alarm_desc = {
-    /* pointer to the static part   */  (tpl_time_obj_static *)&AlarmBlinkFast_static,
-    /* next alarm                   */  NULL,
-    /* prev alarm                   */  NULL,
-    /* cycle                        */  0,
-    /* date                         */  0,
-    /* State of the alarm           */  ALARM_SLEEP
-};
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Alarm AlarmBlinkSlow descriptor
- *
- * This alarm does the activation of task Blink_slow
- */
-
-
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-CONST(tpl_task_activation_action, OS_CONST) AlarmBlinkSlow_action = {
-  {
-    /* action function  */  tpl_action_activate_task
-  },
-  /* task id            */  Blink_slow_id
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
- 
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-CONST(tpl_alarm_static, OS_CONST) AlarmBlinkSlow_static = {
-  {
-    /* pointer to counter           */  &SystemCounter_counter_desc,
-    /* pointer to the expiration    */  tpl_raise_alarm
-#if (WITH_ID == YES)
-    /* id of the alarm for tracing  */  , AlarmBlinkSlow_id
-#endif
-#if WITH_OSAPPLICATION == YES
-    /* OS application id            */  , 
-#endif
-  },
-  /* action of the alarm  */  (tpl_action *)&AlarmBlinkSlow_action
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-VAR(tpl_time_obj, OS_VAR) AlarmBlinkSlow_alarm_desc = {
-    /* pointer to the static part   */  (tpl_time_obj_static *)&AlarmBlinkSlow_static,
+VAR(tpl_time_obj, OS_VAR) AlarmBlink_alarm_desc = {
+    /* pointer to the static part   */  (tpl_time_obj_static *)&AlarmBlink_static,
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
     /* cycle                        */  0,
@@ -1505,8 +1280,7 @@ VAR(tpl_time_obj, OS_VAR) a500msec_alarm_desc = {
 #include "tpl_memmap.h"
 CONSTP2VAR(tpl_time_obj, AUTOMATIC, OS_APPL_DATA)
   tpl_alarm_table[ALARM_COUNT] = {
-  &AlarmBlinkFast_alarm_desc,
-  &AlarmBlinkSlow_alarm_desc,
+  &AlarmBlink_alarm_desc,
   &a100msec_alarm_desc,
   &a500msec_alarm_desc
 };
@@ -1727,9 +1501,8 @@ tpl_send_message_table[SEND_MESSAGE_COUNT] = {
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[11];
-VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[8] = {
-  0,
+VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[9];
+VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[7] = {
   0,
   0,
   0,
@@ -1774,9 +1547,8 @@ VAR(tpl_kern_state, OS_VAR) tpl_kern =
 CONSTP2CONST(char, AUTOMATIC, OS_APPL_DATA) proc_name_table[TASK_COUNT + ISR_COUNT + 1] = {
 
   "Led_ON",
+  "Blink",
   "Led_OFF",
-  "Blink_fast",
-  "Blink_slow",
   "TaskV",
   "TaskM",
   "TaskC",

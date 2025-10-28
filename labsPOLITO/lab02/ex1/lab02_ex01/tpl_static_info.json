@@ -7,21 +7,11 @@
       "ACTION" : "ACTIVATETASK",
       "ACTION_S" : 
       {
-        "TASK" : "Blink_fast"
+        "TASK" : "Blink"
       },
       "AUTOSTART" : "false",
       "COUNTER" : "SystemCounter",
-      "NAME" : "AlarmBlinkFast"
-    },    
-    {
-      "ACTION" : "ACTIVATETASK",
-      "ACTION_S" : 
-      {
-        "TASK" : "Blink_slow"
-      },
-      "AUTOSTART" : "false",
-      "COUNTER" : "SystemCounter",
-      "NAME" : "AlarmBlinkSlow"
+      "NAME" : "AlarmBlink"
     },    
     {
       "ACTION" : "ACTIVATETASK",
@@ -121,33 +111,7 @@
       "NOTIFICATIONERROR" : "NONE"
     }
   ],
-  "resource" : 
-  [
-    
-    {
-      "ISRUSAGE" : [],
-      "KIND" : "Resource",
-      "NAME" : "Led",
-      "PRIORITY" : 2,
-      "RESOURCEPROPERTY" : "STANDARD",
-      "TASKUSAGE" : 
-      [
-        
-        {
-          "VALUE" : "Blink_fast"
-        },        
-        {
-          "VALUE" : "Blink_slow"
-        },        
-        {
-          "VALUE" : "Led_OFF"
-        },        
-        {
-          "VALUE" : "Led_ON"
-        }
-      ]
-    }
-  ],
+  "resource" : [],
   "task" : 
   [
     
@@ -158,13 +122,17 @@
       "NAME" : "Led_ON",
       "NONPREEMPTABLE" : "false",
       "PRIORITY" : 1,
-      "RESOURCE" : 
-      [
-        
-        {
-          "VALUE" : "Led"
-        }
-      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Blink",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -176,49 +144,6 @@
       "NAME" : "Led_OFF",
       "NONPREEMPTABLE" : "false",
       "PRIORITY" : 1,
-      "RESOURCE" : 
-      [
-        
-        {
-          "VALUE" : "Led"
-        }
-      ],
-      "SCHEDULE" : "FULL",
-      "STACKSIZE" : 128,
-      "USEINTERNALRESOURCE" : "false"
-    },    
-    {
-      "ACTIVATION" : 1,
-      "AUTOSTART" : "false",
-      "KIND" : "Task",
-      "NAME" : "Blink_fast",
-      "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 1,
-      "RESOURCE" : 
-      [
-        
-        {
-          "VALUE" : "Led"
-        }
-      ],
-      "SCHEDULE" : "FULL",
-      "STACKSIZE" : 128,
-      "USEINTERNALRESOURCE" : "false"
-    },    
-    {
-      "ACTIVATION" : 1,
-      "AUTOSTART" : "false",
-      "KIND" : "Task",
-      "NAME" : "Blink_slow",
-      "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 1,
-      "RESOURCE" : 
-      [
-        
-        {
-          "VALUE" : "Led"
-        }
-      ],
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -236,7 +161,7 @@
       ],
       "NAME" : "TaskV",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 3,
+      "PRIORITY" : 2,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -267,7 +192,7 @@
       ],
       "NAME" : "TaskM",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 4,
+      "PRIORITY" : 3,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -295,7 +220,7 @@
       ],
       "NAME" : "TaskC",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 5,
+      "PRIORITY" : 4,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -306,7 +231,7 @@
       "KIND" : "Task",
       "NAME" : "stop",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 6,
+      "PRIORITY" : 5,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
