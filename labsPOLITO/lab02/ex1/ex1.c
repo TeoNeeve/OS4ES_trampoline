@@ -74,13 +74,12 @@ int timer_pressure(void)
 int message_scheduler(int received_message) // Extracting on the receiver side:
 {
     static int reference_value = -1;
-    static int scheduled_message = -1;
+    int scheduled_message = -1;
     int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, bits 0..9
-    int received_voltage_mV = (received_adc_value * 5000) / 1023; // in mV
 
-    // If the press flag is set, update the reference and turn LED OFF
+    // If the press flag is set, update the reference using raw ADC value
     if (received_message & (1 << PRESS_FLAG_BIT)) {
-        reference_value = received_voltage_mV;
+        reference_value = received_adc_value;  // Store raw ADC value (0-1023)
         scheduled_message = 0;
         return scheduled_message;
     }
@@ -91,7 +90,8 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
         return scheduled_message;
     }
     
-    int difference = abs(received_voltage_mV - reference_value);
+    // Compare raw ADC values (0-1023 range)
+    int difference = abs(received_adc_value - reference_value);
     if (difference < 100) {
         scheduled_message = 0; // LED OFF
         // per qualche motivo continua ad entrare qua dopo la ref settata
