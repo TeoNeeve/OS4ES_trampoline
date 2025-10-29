@@ -13,7 +13,6 @@
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
-static bool long_press_sent = false; // to send once per long press
 // We use the raw ADC reading (0..1023). Do NOT scale to volts when
 // encoding into the message so the 10-bit range occupies bits 0..9.
 
@@ -61,15 +60,14 @@ int timer_pressure(void)
     } else {
         pressed_flag = false; // reset all press states
         long_pressed_flag = false;
-        long_press_sent = false;
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
     int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
     // Only set the press flag once per long press (edge), not continuously
-    if (long_pressed_flag && !long_press_sent) {
+    if (long_pressed_flag) {
+        debuggatore();
         message |= (1 << PRESS_FLAG_BIT); // setting bit 12 = 1
-        long_press_sent = true; // mark as sent
     }
     return message;
 }
