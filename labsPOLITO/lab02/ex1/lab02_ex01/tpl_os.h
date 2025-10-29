@@ -467,8 +467,6 @@ FUNC(StatusType, COM_CODE) GetMessageStatus(
  */
 DeclareApplicationMode(stdAppmode);
 DeclareTask(Blink);
-DeclareTask(Led_OFF);
-DeclareTask(Led_ON);
 DeclareTask(TaskC);
 DeclareTask(TaskM);
 DeclareTask(TaskV);

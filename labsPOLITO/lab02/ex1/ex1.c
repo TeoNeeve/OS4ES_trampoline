@@ -13,7 +13,6 @@
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
-static bool long_press_sent = false; // to send once per long press
 // We use the raw ADC reading (0..1023). Do NOT scale to volts when
 // encoding into the message so the 10-bit range occupies bits 0..9.
 
@@ -61,15 +60,13 @@ int timer_pressure(void)
     } else {
         pressed_flag = false; // reset all press states
         long_pressed_flag = false;
-        long_press_sent = false;
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
     int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
     // Only set the press flag once per long press (edge), not continuously
-    if (long_pressed_flag && !long_press_sent) {
+    if (long_pressed_flag) {
         message |= (1 << PRESS_FLAG_BIT); // setting bit 12 = 1
-        long_press_sent = true; // mark as sent
     }
     return message;
 }
@@ -79,24 +76,26 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
     static int reference_value = -1;
     int scheduled_message = -1;
     int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, bits 0..9
-    int received_voltage_mV = (received_adc_value * 5000) / 1023; // in mV
 
-    // If the press flag is set, update the reference and turn LED OFF
+    // If the press flag is set, update the reference using raw ADC value
     if (received_message & (1 << PRESS_FLAG_BIT)) {
-        reference_value = received_voltage_mV;
-        return 0;
+        reference_value = received_adc_value;  // Store raw ADC value (0-1023)
+        scheduled_message = 0;
+        return scheduled_message;
     }
 
     // If we don't have a reference yet turn LED ON
     if (reference_value == -1) {
-        return 3;
+        scheduled_message = 3;
+        return scheduled_message;
     }
     
-    int difference = abs(received_voltage_mV - reference_value);
-    if (difference < 100) {
+    // Compare raw ADC values (0-1023 range), 1 bit = ~4.9mV
+    int difference = abs(received_adc_value - reference_value);
+    if (difference < 20) { // 100 mV approximately 20 ADC units
         scheduled_message = 0; // LED OFF
         // per qualche motivo continua ad entrare qua dopo la ref settata
-    } else  if (difference < 200) {
+    } else  if (difference < 40) { // 200 mV approximately 40 ADC units
         scheduled_message = 1; // Blink slow
     } else {
         scheduled_message = 2; // Blink fast
@@ -106,46 +105,40 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 
 TASK(TaskC)
 {
-    int message = timer_pressure();
-    SendMessage(MsgCtoM_send, &message); // Send message to TaskM function implemented by osek
+    int message_C = timer_pressure();
+    SendMessage(MsgCtoM_send, &message_C); // Send message to TaskM function implemented by osek
     TerminateTask();
 }
 
 TASK(TaskM)
 {
-    int received_message;
-    ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
-    int scheduled_message = message_scheduler(received_message);
+    int received_message_C;
+    ReceiveMessage(MsgCtoM, &received_message_C); // Receive message from TaskC function implemented by osek
+    int scheduled_message_V = message_scheduler(received_message_C);
 
-    if (scheduled_message != -1) {
-        SendMessage(MsgMtoV_send, &scheduled_message); // Send message to TaskV function implemented by osek
+    if (scheduled_message_V != -1) {
+        SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV function implemented by osek
     }
     TerminateTask();
 }
 
 TASK(TaskV)
 {
-    int received_message;
-    ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
-    if (received_message == 0) { // LED OFF
+    int received_message_V;
+    ReceiveMessage(MsgMtoV, &received_message_V); // Receive message from TaskM function implemented by osek
+    if (received_message_V == 0) {
         CancelAlarm(AlarmBlink);
-        ActivateTask(Led_OFF);
-    } else if (received_message == 1) { // Blink slow
+        digitalWrite(LED_PIN, LOW); // LED OFF
+    } else if (received_message_V == 1) { // Blink slow
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
-    } else if (received_message == 2) { // Blink fast
+    } else if (received_message_V == 2) { // Blink fast
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
-    } else if (received_message == 3) { // LED ON (no ref)
+    } else if (received_message_V == 3) {
         CancelAlarm(AlarmBlink);
-        ActivateTask(Led_ON);
+        digitalWrite(LED_PIN, HIGH);// LED ON (no ref)
     }
-    TerminateTask();
-}
-
-TASK(Led_OFF)
-{
-    digitalWrite(LED_PIN, LOW);
     TerminateTask();
 }
 
@@ -154,12 +147,6 @@ TASK(Blink)
     static bool led_state = false;
     led_state = !led_state;
     digitalWrite(LED_PIN, led_state ? HIGH : LOW);
-    TerminateTask();
-}
-
-TASK(Led_ON)
-{
-    digitalWrite(LED_PIN, HIGH);
     TerminateTask();
 }
 

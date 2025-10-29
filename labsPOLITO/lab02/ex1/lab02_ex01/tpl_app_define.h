@@ -96,9 +96,9 @@
  *   right with the rank set to 0;
  * - RANK_MASK is the mask to get only the rank.
  */
-#define PRIORITY_SHIFT                   2
-#define PRIORITY_MASK                    28
-#define RANK_MASK                        3
+#define PRIORITY_SHIFT                   1
+#define PRIORITY_MASK                    14
+#define RANK_MASK                        1
 
 /*=============================================================================
  * Number of objects used by the application
@@ -114,7 +114,7 @@
 /*-----------------------------------------------------------------------------
  * Number of tasks
  */
-#define TASK_COUNT             7
+#define TASK_COUNT             5
 
 /*-----------------------------------------------------------------------------
  * Number of spinlocks
