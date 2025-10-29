@@ -74,7 +74,7 @@ int timer_pressure(void)
 int message_scheduler(int received_message) // Extracting on the receiver side:
 {
     static int reference_value = -1;
-    int scheduled_message = -1;
+    static int scheduled_message = -1;
     int received_adc_value = received_message & ADC_10BIT_MASK; // Value of A0, bits 0..9
     int received_voltage_mV = (received_adc_value * 5000) / 1023; // in mV
 
