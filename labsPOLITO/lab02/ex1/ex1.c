@@ -66,7 +66,6 @@ int timer_pressure(void)
     int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
     // Only set the press flag once per long press (edge), not continuously
     if (long_pressed_flag) {
-        debuggatore();
         message |= (1 << PRESS_FLAG_BIT); // setting bit 12 = 1
     }
     return message;
@@ -93,6 +92,7 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
     int difference = abs(received_voltage_mV - reference_value);
     if (difference < 100) {
         scheduled_message = 0; // LED OFF
+        debuggatore();
         // per qualche motivo continua ad entrare qua dopo la ref settata
     } else  if (difference < 200) {
         scheduled_message = 1; // Blink slow
@@ -104,37 +104,37 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 
 TASK(TaskC)
 {
-    int message = timer_pressure();
-    SendMessage(MsgCtoM_send, &message); // Send message to TaskM function implemented by osek
+    int message_C = timer_pressure();
+    SendMessage(MsgCtoM_send, &message_C); // Send message to TaskM function implemented by osek
     TerminateTask();
 }
 
 TASK(TaskM)
 {
-    int received_message;
-    ReceiveMessage(MsgCtoM, &received_message); // Receive message from TaskC function implemented by osek
-    int scheduled_message = message_scheduler(received_message);
+    int received_message_C;
+    ReceiveMessage(MsgCtoM, &received_message_C); // Receive message from TaskC function implemented by osek
+    int scheduled_message_V = message_scheduler(received_message_C);
 
-    if (scheduled_message != -1) {
-        SendMessage(MsgMtoV_send, &scheduled_message); // Send message to TaskV function implemented by osek
+    if (scheduled_message_V != -1) {
+        SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV function implemented by osek
     }
     TerminateTask();
 }
 
 TASK(TaskV)
 {
-    int received_message;
-    ReceiveMessage(MsgMtoV, &received_message); // Receive message from TaskM function implemented by osek
-    if (received_message == 0) { // LED OFF
+    int received_message_V;
+    ReceiveMessage(MsgMtoV, &received_message_V); // Receive message from TaskM function implemented by osek
+    if (received_message_V == 0) { // LED OFF
         CancelAlarm(AlarmBlink);
         ActivateTask(Led_OFF);
-    } else if (received_message == 1) { // Blink slow
+    } else if (received_message_V == 1) { // Blink slow
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
-    } else if (received_message == 2) { // Blink fast
+    } else if (received_message_V == 2) { // Blink fast
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
-    } else if (received_message == 3) { // LED ON (no ref)
+    } else if (received_message_V == 3) { // LED ON (no ref)
         CancelAlarm(AlarmBlink);
         ActivateTask(Led_ON);
     }
