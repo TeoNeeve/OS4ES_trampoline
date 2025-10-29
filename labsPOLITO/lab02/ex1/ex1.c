@@ -4,7 +4,6 @@
 #define LED_PIN 13 
 #define pinSwitch 12
 #define Switch_THRESHOLD 1000   // milliseconds
-#define DEBUG_PIN 10            // Debug output pin ######################################
 #define PRESS_FLAG_BIT 12       // Bit position for press flag
 #define ADC_10BIT_MASK 0b001111111111 // Mask for 10-bit ADC (bits 0–9)
 
@@ -25,7 +24,6 @@ void setup(void)
     init();
     pinMode(LED_PIN, OUTPUT);
     pinMode(pinSwitch, INPUT_PULLUP);
-    pinMode(DEBUG_PIN, OUTPUT); // out for debug #########################################
     pinMode(A0, INPUT);
     StartOS(OSDEFAULTAPPMODE);
 }
@@ -35,13 +33,6 @@ void loop(void)
     while(1){
         // Task implementations used by the OIL file
     }
-}
-
-int debuggatore(void) // debug output on pin 10 ###################################################
-{
-    static bool debug_led_state = true; 
-    debug_led_state = !debug_led_state;
-    digitalWrite(DEBUG_PIN, debug_led_state ? HIGH : LOW);
 }
 
 int timer_pressure(void)
