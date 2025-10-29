@@ -98,23 +98,7 @@ CPU test {
 		MESSAGE = MsgCtoM_send; /* send to TaskM */
 	};
 
-	TASK Led_OFF {
-		PRIORITY = 1;
-		AUTOSTART = FALSE;
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-		/*RESOURCE = Led;*/
-	};
-
 	TASK Blink {
-		PRIORITY = 1;
-		AUTOSTART = FALSE;
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-		/*RESOURCE = Led;*/
-	};
-
-	TASK Led_ON {
 		PRIORITY = 1;
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;

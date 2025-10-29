@@ -81,18 +81,19 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
     // If the press flag is set, update the reference and turn LED OFF
     if (received_message & (1 << PRESS_FLAG_BIT)) {
         reference_value = received_voltage_mV;
-        return 0;
+        scheduled_message = 0;
+        return scheduled_message;
     }
 
     // If we don't have a reference yet turn LED ON
     if (reference_value == -1) {
-        return 3;
+        scheduled_message = 3;
+        return scheduled_message;
     }
     
     int difference = abs(received_voltage_mV - reference_value);
     if (difference < 100) {
         scheduled_message = 0; // LED OFF
-        debuggatore();
         // per qualche motivo continua ad entrare qua dopo la ref settata
     } else  if (difference < 200) {
         scheduled_message = 1; // Blink slow
@@ -125,25 +126,19 @@ TASK(TaskV)
 {
     int received_message_V;
     ReceiveMessage(MsgMtoV, &received_message_V); // Receive message from TaskM function implemented by osek
-    if (received_message_V == 0) { // LED OFF
+    if (received_message_V == 0) {
         CancelAlarm(AlarmBlink);
-        ActivateTask(Led_OFF);
+        digitalWrite(LED_PIN, LOW); // LED OFF
     } else if (received_message_V == 1) { // Blink slow
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
     } else if (received_message_V == 2) { // Blink fast
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
-    } else if (received_message_V == 3) { // LED ON (no ref)
+    } else if (received_message_V == 3) {
         CancelAlarm(AlarmBlink);
-        ActivateTask(Led_ON);
+        digitalWrite(LED_PIN, HIGH);// LED ON (no ref)
     }
-    TerminateTask();
-}
-
-TASK(Led_OFF)
-{
-    digitalWrite(LED_PIN, LOW);
     TerminateTask();
 }
 
@@ -152,12 +147,6 @@ TASK(Blink)
     static bool led_state = false;
     led_state = !led_state;
     digitalWrite(LED_PIN, led_state ? HIGH : LOW);
-    TerminateTask();
-}
-
-TASK(Led_ON)
-{
-    digitalWrite(LED_PIN, HIGH);
     TerminateTask();
 }
 
