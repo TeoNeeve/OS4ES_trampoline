@@ -90,12 +90,12 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
         return scheduled_message;
     }
     
-    // Compare raw ADC values (0-1023 range)
+    // Compare raw ADC values (0-1023 range), 1 bit = ~4.9mV
     int difference = abs(received_adc_value - reference_value);
-    if (difference < 100) {
+    if (difference < 20) { // 100 mV approximately 20 ADC units
         scheduled_message = 0; // LED OFF
         // per qualche motivo continua ad entrare qua dopo la ref settata
-    } else  if (difference < 200) {
+    } else  if (difference < 40) { // 200 mV approximately 40 ADC units
         scheduled_message = 1; // Blink slow
     } else {
         scheduled_message = 2; // Blink fast

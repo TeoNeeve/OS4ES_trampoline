@@ -1,6 +1,6 @@
 <circuit version="1.1.0-SR1" rev="2005" stepSize="1000000" stepsPS="1000000" NLsteps="100000" reaStep="1000000" animate="0" >
 
-<item itemtype="Voltage Source" CircId="Voltage Source-13" mainComp="false" ShowProp="MaxValue" Show_id="false" Show_Val="true" Pos="-612,-316" rotation="0" hflip="1" vflip="1" label="Voltage Source-13" idLabPos="-40,-80" labelrot="0" valLabPos="-26,10" valLabRot="0" Running="true" Value_Volt="1 V" MaxValue="5 V" MinValue="0 V" />
+<item itemtype="Voltage Source" CircId="Voltage Source-13" mainComp="false" ShowProp="MaxValue" Show_id="false" Show_Val="true" Pos="-612,-316" rotation="0" hflip="1" vflip="1" label="Voltage Source-13" idLabPos="-40,-80" labelrot="0" valLabPos="-26,10" valLabRot="0" Running="true" Value_Volt="2.445 V" MaxValue="5 V" MinValue="0 V" />
 
 <item itemtype="Ground" CircId="Ground-11" mainComp="false" Show_id="false" Show_Val="false" Pos="-664,-172" rotation="0" hflip="1" vflip="1" label="Ground-11" idLabPos="-16,8" labelrot="0" valLabPos="0,0" valLabRot="0" />
 
