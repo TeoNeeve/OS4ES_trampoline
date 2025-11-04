@@ -34,8 +34,8 @@ CPU test {
 	ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 550; CYCLETIME = 500; };
-	}; /* ho messo start a 50ms per avere un migliore task scheduling */
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 500; CYCLETIME = 500; };
+	};
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
