@@ -5,8 +5,8 @@ CPU test {
     	STATUS = STANDARD;
     	BUILD = TRUE {
     		TRAMPOLINE_BASE_PATH = "../../..";
-			APP_NAME = "ex1_arduino";
-			APP_SRC = "ex1.c";
+			APP_NAME = "ex2_arduino";
+			APP_SRC = "ex2.c";
 			CPPCOMPILER = "avr-g++";
     		COMPILER = "avr-gcc";
     		LINKER = "avr-gcc";
@@ -25,11 +25,11 @@ CPU test {
 		AUTOSTART = FALSE;
 	};
 
-	ALARM a500msec {
+	/* ALARM a500msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskM; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 501; CYCLETIME = 500; };
-	};
+	}; */
 
 	ALARM a100msec {
 		COUNTER = SystemCounter;
@@ -49,7 +49,7 @@ CPU test {
 			SENDINGMESSAGE = MsgCtoM_send;
 			QUEUESIZE = 1;
 		};
-		/* NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; */
+		NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; /* Now is event-driven */
 	};
 
 	/* Message from TaskM to TaskV: TaskM sends an int, TaskV receives queued */

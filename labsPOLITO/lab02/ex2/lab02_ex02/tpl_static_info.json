@@ -34,28 +34,6 @@
       },
       "COUNTER" : "SystemCounter",
       "NAME" : "a100msec"
-    },    
-    {
-      "ACTION" : "ACTIVATETASK",
-      "ACTION_S" : 
-      {
-        "TASK" : "TaskM"
-      },
-      "AUTOSTART" : "true",
-      "AUTOSTART_S" : 
-      {
-        "ALARMTIME" : 501,
-        "APPMODE" : 
-        [
-          
-          {
-            "VALUE" : "stdAppmode"
-          }
-        ],
-        "CYCLETIME" : 500
-      },
-      "COUNTER" : "SystemCounter",
-      "NAME" : "a500msec"
     }
   ],
   "event" : [],
@@ -72,8 +50,12 @@
         "SENDINGMESSAGE" : "MsgCtoM_send"
       },
       "NAME" : "MsgCtoM",
-      "NOTIFICATION" : "NONE",
-      "NOTIFICATIONERROR" : "NONE"
+      "NOTIFICATION" : "ACTIVATETASK",
+      "NOTIFICATIONERROR" : "NONE",
+      "NOTIFICATION_S" : 
+      {
+        "TASK" : "TaskM"
+      }
     },    
     {
       "MESSAGEPROPERTY" : "SEND_STATIC_INTERNAL",
