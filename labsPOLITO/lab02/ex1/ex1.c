@@ -101,10 +101,12 @@ TASK(TaskM)
     ReceiveMessage(MsgCtoM, &received_message_C); // Receive message from TaskC
     int scheduled_message_V = message_scheduler(received_message_C);
 
-    if (scheduled_message_V != -1) {
+    static int last_message_V = -1;
+    // Send message to TaskV only if it has changed
+    if (scheduled_message_V != last_message_V) {
+        last_message_V = scheduled_message_V;
         SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV
     }
-    TerminateTask();
 }
 
 TASK(TaskV)
