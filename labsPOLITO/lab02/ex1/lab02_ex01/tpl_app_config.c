@@ -997,7 +997,7 @@ VAR(tpl_time_obj, OS_VAR) a100msec_alarm_desc = {
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
     /* cycle                        */  100,
-    /* date                         */  50,
+    /* date                         */  0,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
@@ -1052,7 +1052,7 @@ VAR(tpl_time_obj, OS_VAR) a500msec_alarm_desc = {
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
     /* cycle                        */  500,
-    /* date                         */  550,
+    /* date                         */  500,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 

@@ -173,7 +173,6 @@ cSourceList.append(projfile.ProjectFile("com/tpl_com_message_kernel.c", trampoli
 
 #--- Add C files of the application
 cSourceList.append(projfile.ProjectFile("ex1.c"))
-cSourceList.append(projfile.ProjectFile("tpl_os_hooks.c"))
 
 #--- Add generated files
 cSourceList.append(projfile.ProjectFile("lab02_ex01/tpl_app_config.c"))

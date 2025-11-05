@@ -7,7 +7,6 @@ CPU test {
     		TRAMPOLINE_BASE_PATH = "../../..";
 			APP_NAME = "ex1_arduino";
 			APP_SRC = "ex1.c";
-			APP_SRC = "tpl_os_hooks.c";
 			CPPCOMPILER = "avr-g++";
     		COMPILER = "avr-gcc";
     		LINKER = "avr-gcc";
@@ -20,11 +19,6 @@ CPU test {
 
 	APPMODE stdAppmode {};
 
-/*
-  	RESOURCE Led {
-	RESOURCEPROPERTY = STANDARD;
- 	 };
-*/
 	ALARM AlarmBlink {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink; };
@@ -40,7 +34,7 @@ CPU test {
 	ALARM a100msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskC; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 50; CYCLETIME = 100; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 0; CYCLETIME = 100; };
 	};
 
 	/* Message from TaskC to TaskM: TaskC sends an int, TaskM receives queued */
@@ -55,7 +49,7 @@ CPU test {
 			SENDINGMESSAGE = MsgCtoM_send;
 			QUEUESIZE = 1;
 		};
-		/* NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; questo non serve viene chiamato ogni 500ms*/
+		/* NOTIFICATION = ACTIVATETASK { TASK = TaskM; }; */
 	};
 
 	/* Message from TaskM to TaskV: TaskM sends an int, TaskV receives queued */
@@ -79,7 +73,7 @@ CPU test {
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 		MESSAGE = MsgCtoM; /* receive from TaskC */
-		MESSAGE = MsgMtoV_send; /* can send to TaskV */
+		MESSAGE = MsgMtoV_send; /* send to TaskV */
 	};
 
 	TASK TaskV {
@@ -103,7 +97,6 @@ CPU test {
 		AUTOSTART = FALSE;
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		/*RESOURCE = Led;*/
 	};
 
 	TASK stop {

@@ -4,16 +4,12 @@
 #define LED_PIN 13 
 #define pinSwitch 12
 #define Switch_THRESHOLD 1000   // milliseconds
-#define PRESS_FLAG_BIT 12       // Bit position for press flag
+#define PRESS_FLAG_BIT 12       // Bit position for new ref
 #define ADC_10BIT_MASK 0b001111111111 // Mask for 10-bit ADC (bits 0–9)
-
-// extern int my_time; usarlo non funziona 
 
 static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
-// We use the raw ADC reading (0..1023). Do NOT scale to volts when
-// encoding into the message so the 10-bit range occupies bits 0..9.
 
 DeclareAlarm(AlarmBlink);
 DeclareAlarm(a500msec);
@@ -35,34 +31,33 @@ void loop(void)
     }
 }
 
-int timer_pressure(void)
+int timer_pressure(void) // Message that taskC sends
 {
-    int A0_valueADC = analogRead(A0); // raw 10-bit ADC read (0..1023)
-    if (digitalRead(pinSwitch) == LOW) { // Button pressed, grounded
+    int A0_valueADC = analogRead(A0); // Raw 10-bit ADC read (0..1023)
+    if (digitalRead(pinSwitch) == LOW) { // Button pressed = grounded
         if (!pressed_flag) { // First instance being pressed
             pressed_flag = true;
             press_time_ms = 0;
         } else  {
             press_time_ms += 100; // taskC called every 100 ms
             if (press_time_ms >= Switch_THRESHOLD) {
-                long_pressed_flag = true; // reached 1s continuous press
+                long_pressed_flag = true; // Reached 1s continuous press
             }
         }
     } else {
-        pressed_flag = false; // reset all press states
+        pressed_flag = false; // Reset all press states
         long_pressed_flag = false;
     }
 
     // Build message: bits 0..9 = ADC value, bit 12 = long-press indicator
     int message = A0_valueADC & ADC_10BIT_MASK;  // bits 0–9: raw ADC
-    // Only set the press flag once per long press (edge), not continuously
     if (long_pressed_flag) {
-        message |= (1 << PRESS_FLAG_BIT); // setting bit 12 = 1
+        message |= (1 << PRESS_FLAG_BIT); // Setting bit 12 = 1
     }
     return message;
 }
 
-int message_scheduler(int received_message) // Extracting on the receiver side:
+int message_scheduler(int received_message) // Extracting on taskM side
 {
     static int reference_value = -1;
     int scheduled_message = -1;
@@ -70,7 +65,7 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 
     // If the press flag is set, update the reference using raw ADC value
     if (received_message & (1 << PRESS_FLAG_BIT)) {
-        reference_value = received_adc_value;  // Store raw ADC value (0-1023)
+        reference_value = received_adc_value;
         scheduled_message = 0;
         return scheduled_message;
     }
@@ -85,7 +80,6 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
     int difference = abs(received_adc_value - reference_value);
     if (difference < 20) { // 100 mV approximately 20 ADC units
         scheduled_message = 0; // LED OFF
-        // per qualche motivo continua ad entrare qua dopo la ref settata
     } else  if (difference < 40) { // 200 mV approximately 40 ADC units
         scheduled_message = 1; // Blink slow
     } else {
@@ -97,18 +91,18 @@ int message_scheduler(int received_message) // Extracting on the receiver side:
 TASK(TaskC)
 {
     int message_C = timer_pressure();
-    SendMessage(MsgCtoM_send, &message_C); // Send message to TaskM function implemented by osek
+    SendMessage(MsgCtoM_send, &message_C); // Send message to TaskM
     TerminateTask();
 }
 
 TASK(TaskM)
 {
     int received_message_C;
-    ReceiveMessage(MsgCtoM, &received_message_C); // Receive message from TaskC function implemented by osek
+    ReceiveMessage(MsgCtoM, &received_message_C); // Receive message from TaskC
     int scheduled_message_V = message_scheduler(received_message_C);
 
     if (scheduled_message_V != -1) {
-        SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV function implemented by osek
+        SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV
     }
     TerminateTask();
 }
@@ -116,7 +110,7 @@ TASK(TaskM)
 TASK(TaskV)
 {
     int received_message_V;
-    ReceiveMessage(MsgMtoV, &received_message_V); // Receive message from TaskM function implemented by osek
+    ReceiveMessage(MsgMtoV, &received_message_V); // Receive message from TaskM
     if (received_message_V == 0) {
         CancelAlarm(AlarmBlink);
         digitalWrite(LED_PIN, LOW); // LED OFF
