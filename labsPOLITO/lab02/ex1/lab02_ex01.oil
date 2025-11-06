@@ -30,7 +30,11 @@ CPU test {
 		ACTION = ACTIVATETASK { TASK = TaskM; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 501; CYCLETIME = 500; };
 	};
-
+	ALARM a500msecV {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskV; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 501; CYCLETIME = 500; };
+	};
 	ALARM a100msec {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskC; };
@@ -60,11 +64,10 @@ CPU test {
 	};
 
 	MESSAGE MsgMtoV {
-		MESSAGEPROPERTY = RECEIVE_QUEUED_INTERNAL {
+		MESSAGEPROPERTY = RECEIVE_UNQUEUED_INTERNAL {
 			SENDINGMESSAGE = MsgMtoV_send;
-			QUEUESIZE = 1;
+			INITIALVALUE = 3; // Stato iniziale "LED ON"
 		};
-		NOTIFICATION = ACTIVATETASK { TASK = TaskV; };
 	};
 
 	TASK TaskM {
@@ -78,10 +81,9 @@ CPU test {
 
 	TASK TaskV {
 		PRIORITY = 2;
-		AUTOSTART = FALSE;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		MESSAGE = MsgMtoV; /* receive from TaskM */
 	};
 	
 	TASK TaskC {

@@ -11,9 +11,11 @@ static unsigned int press_time_ms = 0;
 static bool pressed_flag = false;
 static bool long_pressed_flag = false;
 
+
 DeclareAlarm(AlarmBlink);
 DeclareAlarm(a500msec);
 DeclareAlarm(a100msec);
+DeclareAlarm(a500msecV);
 
 void setup(void)
 {
@@ -107,6 +109,7 @@ TASK(TaskM)
         last_message_V = scheduled_message_V;
         SendMessage(MsgMtoV_send, &scheduled_message_V); // Send message to TaskV
     }
+    TerminateTask();
 }
 
 TASK(TaskV)
@@ -142,6 +145,7 @@ TASK(stop)
 	CancelAlarm(AlarmBlink);
     CancelAlarm(a500msec);
 	CancelAlarm(a100msec);
+    CancelAlarm(a500msecV);
 	ShutdownOS(E_OK);
 	TerminateTask();
 }
