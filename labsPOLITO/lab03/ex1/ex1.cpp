@@ -9,14 +9,21 @@
 #define	B_PERIOD	1500
 #define	C_PERIOD	2800
 
+DeclareAlarm(activateA);
+DeclareAlarm(activateB);
+DeclareAlarm(activateC);
+
 void setup(void)
 {
+	init();
 	Serial.begin(9600);
-    init();
-    ActivateTask(TaskA);
+	delay(100);  // Give serial time to initialize
+	Serial.println("System starting...");
+	fflush(stdout);
+    StartOS(OSDEFAULTAPPMODE);
+	ActivateTask(TaskA);
 	ActivateTask(TaskB);
 	ActivateTask(TaskC);
-    StartOS(OSDEFAULTAPPMODE);
 }
 
 void loop(void)

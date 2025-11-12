@@ -19,13 +19,7 @@ CPU three_tasks {
 	};
 
 	APPMODE stdAppmode {};
-/*
-	ALARM Ticker {
-		COUNTER = SystemCounter;
-		ACTION  = ALARMCALLBACK { ALARMCALLBACKNAME = "TickerCb"; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 1; };
-	};
-*/
+
 	ALARM activateA {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskA; };
