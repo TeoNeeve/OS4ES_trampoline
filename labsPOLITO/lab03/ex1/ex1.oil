@@ -1,0 +1,81 @@
+OIL_VERSION = "2.5";
+
+CPU three_tasks {
+	OS config {
+		STATUS = STANDARD;
+		BUILD = TRUE {
+    		TRAMPOLINE_BASE_PATH = "../../..";
+			APP_NAME = "ex1_arduino";
+			APP_SRC = "ex1.cpp";
+			CPPCOMPILER = "avr-g++";
+    		COMPILER = "avr-gcc";
+    		LINKER = "avr-gcc";
+    		ASSEMBLER = "avr-gcc";
+    		COPIER = "avr-objcopy";
+    		SYSTEM = PYTHON;
+			LIBRARY = serial;
+    	};
+    SYSTEM_CALL = TRUE;
+	};
+
+	APPMODE stdAppmode {};
+/*
+	ALARM Ticker {
+		COUNTER = SystemCounter;
+		ACTION  = ALARMCALLBACK { ALARMCALLBACKNAME = "TickerCb"; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 1; };
+	};
+*/
+	ALARM activateA {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskA; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1000; CYCLETIME = 1000; };
+	};
+
+	ALARM activateB {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskB; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1500; CYCLETIME = 1500; };
+	};
+
+	ALARM activateC {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskC; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 2800; CYCLETIME = 2800; };
+	};
+
+	ALARM stopper {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = stop; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 60000; CYCLETIME = 0; };
+	};
+
+	TASK TaskA {
+		PRIORITY = 3;
+		AUTOSTART = TRUE {APPMODE = stdAppmode;};
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+	TASK TaskB {
+		PRIORITY = 2;
+		AUTOSTART = TRUE {APPMODE = stdAppmode;};
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+	TASK TaskC {
+		PRIORITY = 1;
+		AUTOSTART = TRUE {APPMODE = stdAppmode;};
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+	TASK stop {
+		PRIORITY = 99;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
+};
