@@ -42,18 +42,31 @@ void do_things( int ms )
 
 TASK(TaskA)
 {
-	unsigned long start_A = millis();
+	static uint32_t countA = 0;
+	countA++;
+	uint32_t deadline_A = countA * (uint32_t)A_PERIOD;
+	uint32_t start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
 	do_things(A_WCET);
 	unsigned long end_A = millis();
 	Serial.print("Finished TaskA at ");
 	Serial.println(end_A);
+	if (end_A > deadline_A) {
+		Serial.print("TaskA missed its deadline of ");
+		Serial.print(deadline_A);
+		Serial.print(" ms (finished at ");
+		Serial.print(end_A);
+		Serial.println(" ms)");
+	}
 	TerminateTask();
 }
 
 TASK(TaskB)
 {
+	static uint32_t countB = 0;
+	countB++;
+	uint32_t deadline_B = countB * (uint32_t)B_PERIOD;
 	unsigned long start_B = millis();
 	Serial.print("Started TaskB at ");
 	Serial.println(start_B);
@@ -61,11 +74,21 @@ TASK(TaskB)
 	unsigned long end_B = millis();
 	Serial.print("Finished TaskB at ");
 	Serial.println(end_B);
+	if (end_B > deadline_B) {
+		Serial.print("TaskB missed its deadline of ");
+		Serial.print(deadline_B);
+		Serial.print(" ms (finished at ");
+		Serial.print(end_B);
+		Serial.println(" ms)");
+	}
 	TerminateTask();
 }
 
 TASK(TaskC)
 {
+	static uint32_t countC = 0;
+	countC++;
+	uint32_t deadline_C = countC * (uint32_t)C_PERIOD;
 	unsigned long start_C = millis();
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
@@ -73,6 +96,13 @@ TASK(TaskC)
 	unsigned long end_C = millis();
 	Serial.print("Finished TaskC at ");
 	Serial.println(end_C);
+	if (end_C > deadline_C) {
+		Serial.print("TaskC missed its deadline of ");
+		Serial.print(deadline_C);
+		Serial.print(" ms (finished at ");
+		Serial.print(end_C);
+		Serial.println(" ms)");
+	}
 	TerminateTask();
 }
 
