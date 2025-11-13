@@ -50,7 +50,7 @@ TASK(TaskA)
 	Serial.println(start_A);
 	do_things(A_WCET);
 	uint32_t end_A = millis();
-	if (end_A > deadline_A) {
+	if (end_A - deadline_A > 0) {
 		Serial.print("TaskA missed its deadline of ");
 		Serial.print(deadline_A);
 		Serial.print(" ms (finished at ");
@@ -74,7 +74,7 @@ TASK(TaskB)
 	Serial.println(start_B);
 	do_things(B_WCET);
 	uint32_t end_B = millis();
-	if (end_B > deadline_B) {
+	if (end_B - deadline_B > 0) {
 		Serial.print("TaskB missed its deadline of ");
 		Serial.print(deadline_B);
 		Serial.print(" ms (finished at ");
@@ -98,7 +98,7 @@ TASK(TaskC)
 	Serial.println(start_C);
 	do_things(C_WCET);
 	uint32_t end_C = millis();
-	if (end_C > deadline_C) {
+	if (end_C - deadline_C > 0) {
 		Serial.print("TaskC missed its deadline of ");
 		Serial.print(deadline_C);
 		Serial.print(" ms (finished at ");
