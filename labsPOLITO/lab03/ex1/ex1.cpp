@@ -50,12 +50,6 @@ void do_thingsC( int ms )
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
 	for(i=0; i<mul; i++) millis();
-=======
-	for (i = 0; i < mul; i++){
-		millis();
-		wdt_reset(); // Reset the watchdog timer so the microcontroller doesn't crash
-	}
->>>>>>> 3edd143a997c32b2427d005ef896ed5e59f94e09
 }
 
 TASK(TaskA)
