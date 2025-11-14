@@ -34,7 +34,6 @@ void do_thingsA( int ms )
 {
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
-<<<<<<< HEAD
 	for(i=0; i<mul; i++) millis();
 }
 
