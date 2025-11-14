@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "tpl_os.h"
+#include <avr/wdt.h>
 
 #define	A_WCET		200
 #define	B_WCET		700
@@ -13,17 +14,14 @@ DeclareAlarm(activateA);
 DeclareAlarm(activateB);
 DeclareAlarm(activateC);
 
+
 void setup(void)
 {
-	init();
 	Serial.begin(9600);
 	delay(100);  // Give serial time to initialize
 	Serial.println("System starting...");
 	fflush(stdout);
     StartOS(OSDEFAULTAPPMODE);
-	ActivateTask(TaskA);
-	ActivateTask(TaskB);
-	ActivateTask(TaskC);
 }
 
 void loop(void)
@@ -37,7 +35,10 @@ void do_things( int ms )
 {
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
-	for (i = 0; i < mul; i++) millis();
+	for (i = 0; i < mul; i++){
+		millis();
+		wdt_reset();
+	}
 }
 
 TASK(TaskA)
@@ -50,7 +51,7 @@ TASK(TaskA)
 	Serial.println(start_A);
 	do_things(A_WCET);
 	uint32_t end_A = millis();
-	if (end_A - deadline_A > 0) {
+	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
 		Serial.print(deadline_A);
 		Serial.print(" ms (finished at ");
@@ -74,7 +75,7 @@ TASK(TaskB)
 	Serial.println(start_B);
 	do_things(B_WCET);
 	uint32_t end_B = millis();
-	if (end_B - deadline_B > 0) {
+	if (end_B > deadline_B) {
 		Serial.print("TaskB missed its deadline of ");
 		Serial.print(deadline_B);
 		Serial.print(" ms (finished at ");
@@ -98,7 +99,7 @@ TASK(TaskC)
 	Serial.println(start_C);
 	do_things(C_WCET);
 	uint32_t end_C = millis();
-	if (end_C - deadline_C > 0) {
+	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");
 		Serial.print(deadline_C);
 		Serial.print(" ms (finished at ");
