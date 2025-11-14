@@ -37,7 +37,7 @@ void do_things( int ms )
 	unsigned long i;
 	for (i = 0; i < mul; i++){
 		millis();
-		wdt_reset();
+		wdt_reset(); // Reset the watchdog timer so the microcontroller doesn't crash
 	}
 }
 
