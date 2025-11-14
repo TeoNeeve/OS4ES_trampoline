@@ -17,10 +17,9 @@ DeclareAlarm(activateC);
 
 void setup(void)
 {
-	Serial.begin(9600);
+	Serial.begin(115200);
 	delay(100);  // Give serial time to initialize
 	Serial.println("System starting...");
-	fflush(stdout);
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -31,26 +30,37 @@ void loop(void)
     }
 }
 
-void do_things( int ms )
+void do_thingsA( int ms )
 {
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
-	for (i = 0; i < mul; i++){
-		millis();
-		wdt_reset();
-	}
+	for(i=0; i<mul; i++) millis();
+}
+
+void do_thingsB( int ms )
+{
+	unsigned long mul = ms * 504UL;
+	unsigned long i;
+	for(i=0; i<mul; i++) millis();
+}
+
+void do_thingsC( int ms )
+{ 
+	unsigned long mul = ms * 504UL;
+	unsigned long i;
+	for(i=0; i<mul; i++) millis();
 }
 
 TASK(TaskA)
 {
-	static uint32_t countA = 0;
+	static int countA = 0;
 	countA++;
-	uint32_t deadline_A = countA * (uint32_t)A_PERIOD;
-	uint32_t start_A = millis();
+	int deadline_A = countA * A_PERIOD;
+	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
-	do_things(A_WCET);
-	uint32_t end_A = millis();
+	do_thingsA(A_WCET);
+	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
 		Serial.print(deadline_A);
@@ -67,14 +77,14 @@ TASK(TaskA)
 
 TASK(TaskB)
 {
-	static uint32_t countB = 0;
+	static int countB = 0;
 	countB++;
-	uint32_t deadline_B = countB * (uint32_t)B_PERIOD;
-	uint32_t start_B = millis();
+	int deadline_B = countB * B_PERIOD;
+	int start_B = millis();
 	Serial.print("Started TaskB at ");
 	Serial.println(start_B);
-	do_things(B_WCET);
-	uint32_t end_B = millis();
+	do_thingsB(B_WCET);
+	int end_B = millis();
 	if (end_B > deadline_B) {
 		Serial.print("TaskB missed its deadline of ");
 		Serial.print(deadline_B);
@@ -91,14 +101,14 @@ TASK(TaskB)
 
 TASK(TaskC)
 {
-	static uint32_t countC = 0;
+	static int countC = 0;
 	countC++;
-	uint32_t deadline_C = countC * (uint32_t)C_PERIOD;
-	uint32_t start_C = millis();
+	int deadline_C = countC * C_PERIOD;
+	int start_C = millis();
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
-	do_things(C_WCET);
-	uint32_t end_C = millis();
+	do_thingsC(C_WCET);
+	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");
 		Serial.print(deadline_C);

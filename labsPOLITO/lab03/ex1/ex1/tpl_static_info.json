@@ -12,7 +12,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 1000,
+        "ALARMTIME" : 977,
         "APPMODE" : 
         [
           
@@ -20,7 +20,7 @@
             "VALUE" : "stdAppmode"
           }
         ],
-        "CYCLETIME" : 1000
+        "CYCLETIME" : 977
       },
       "COUNTER" : "SystemCounter",
       "NAME" : "activateA"
@@ -34,7 +34,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 1500,
+        "ALARMTIME" : 1465,
         "APPMODE" : 
         [
           
@@ -42,7 +42,7 @@
             "VALUE" : "stdAppmode"
           }
         ],
-        "CYCLETIME" : 1500
+        "CYCLETIME" : 1465
       },
       "COUNTER" : "SystemCounter",
       "NAME" : "activateB"
@@ -56,7 +56,7 @@
       "AUTOSTART" : "true",
       "AUTOSTART_S" : 
       {
-        "ALARMTIME" : 2800,
+        "ALARMTIME" : 2734,
         "APPMODE" : 
         [
           
@@ -64,7 +64,7 @@
             "VALUE" : "stdAppmode"
           }
         ],
-        "CYCLETIME" : 2800
+        "CYCLETIME" : 2734
       },
       "COUNTER" : "SystemCounter",
       "NAME" : "activateC"

@@ -806,8 +806,8 @@ VAR(tpl_time_obj, OS_VAR) activateA_alarm_desc = {
     /* pointer to the static part   */  (tpl_time_obj_static *)&activateA_static,
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
-    /* cycle                        */  1000,
-    /* date                         */  1000,
+    /* cycle                        */  977,
+    /* date                         */  977,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
@@ -861,8 +861,8 @@ VAR(tpl_time_obj, OS_VAR) activateB_alarm_desc = {
     /* pointer to the static part   */  (tpl_time_obj_static *)&activateB_static,
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
-    /* cycle                        */  1500,
-    /* date                         */  1500,
+    /* cycle                        */  1465,
+    /* date                         */  1465,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
@@ -916,8 +916,8 @@ VAR(tpl_time_obj, OS_VAR) activateC_alarm_desc = {
     /* pointer to the static part   */  (tpl_time_obj_static *)&activateC_static,
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
-    /* cycle                        */  2800,
-    /* date                         */  2800,
+    /* cycle                        */  2734,
+    /* date                         */  2734,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
