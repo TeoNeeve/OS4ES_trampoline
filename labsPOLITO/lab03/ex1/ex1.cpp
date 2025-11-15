@@ -18,8 +18,7 @@ DeclareAlarm(activateC);
 void setup(void)
 {
 	Serial.begin(115200);
-	delay(100);  // Give serial time to initialize
-	Serial.println("System starting...");
+	delay(100);
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -57,19 +56,16 @@ TASK(TaskA)
 	countA++;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
-	Serial.print("Started TaskA at ");
+	Serial.print("A ");
 	Serial.println(start_A);
 	do_thingsA(A_WCET);
 	int end_A = millis();
 	if (end_A > deadline_A) {
-		Serial.print("TaskA missed its deadline of ");
-		Serial.print(deadline_A);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_A);
-		Serial.println(" ms)");
+		Serial.print("MissA ");
+		Serial.print(end_A - deadline_A);
 	}
 	else {
-		Serial.print("Finished TaskA at ");
+		Serial.print("okA ");
 		Serial.println(end_A);
 	}
 	TerminateTask();
@@ -81,19 +77,16 @@ TASK(TaskB)
 	countB++;
 	int deadline_B = countB * B_PERIOD;
 	int start_B = millis();
-	Serial.print("Started TaskB at ");
+	Serial.print("B ");
 	Serial.println(start_B);
 	do_thingsB(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
-		Serial.print("TaskB missed its deadline of ");
-		Serial.print(deadline_B);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_B);
-		Serial.println(" ms)");
+		Serial.print("MissB ");
+		Serial.print(end_B - deadline_B);
 	}
 	else {
-		Serial.print("Finished TaskB at ");
+		Serial.print("okB ");
 		Serial.println(end_B);
 	}
 	TerminateTask();
@@ -105,19 +98,16 @@ TASK(TaskC)
 	countC++;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
-	Serial.print("Started TaskC at ");
+	Serial.print("C ");
 	Serial.println(start_C);
 	do_thingsC(C_WCET);
 	int end_C = millis();
 	if (end_C > deadline_C) {
-		Serial.print("TaskC missed its deadline of ");
-		Serial.print(deadline_C);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_C);
-		Serial.println(" ms)");
+		Serial.print("MissC ");
+		Serial.print(end_C - deadline_C);
 	}
 	else {
-		Serial.print("Finished TaskC at ");
+		Serial.print("okC ");
 		Serial.println(end_C);
 	}
 	TerminateTask();
