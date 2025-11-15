@@ -3,8 +3,8 @@
 #include <avr/wdt.h>
 
 #define	A_WCET		200
-#define	B_WCET		700
-#define	C_WCET		300
+#define	B_WCET		699
+#define	C_WCET		299
 
 #define	A_PERIOD	1000
 #define	B_PERIOD	1500
@@ -19,6 +19,7 @@ void setup(void)
 {
 	Serial.begin(115200);
 	delay(100);
+	Serial.println("Start...");
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -30,6 +31,13 @@ void loop(void)
 }
 
 void do_thingsA( int ms )
+{
+	unsigned long mul = ms * 504UL;
+	unsigned long i;
+	for(i=0; i<mul; i++) millis();
+}
+
+void do_thingsA2( int ms )
 {
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
@@ -56,13 +64,13 @@ TASK(TaskA)
 	countA++;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
-	Serial.print("A ");
+	Serial.print("startA ");
 	Serial.println(start_A);
 	if (countA == 1) {
 		do_thingsA(199);
 	}
 	else {
-		do_thingsA(A_WCET);
+		delay(200); // si protrebbe usare delay tanto A non è interrotta
 	}
 	int end_A = millis();
 	if (end_A > deadline_A) {
@@ -82,9 +90,9 @@ TASK(TaskB)
 	countB++;
 	int deadline_B = countB * B_PERIOD;
 	int start_B = millis();
-	Serial.print("B ");
+	Serial.print("startB ");
 	Serial.println(start_B);
-	do_thingsB(700);
+	do_thingsB(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
 		Serial.print("MissB ");
@@ -103,9 +111,9 @@ TASK(TaskC)
 	countC++;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
-	Serial.print("C ");
+	Serial.print("startC ");
 	Serial.println(start_C);
-	do_thingsC(300);
+	do_thingsC(C_WCET);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("MissC ");
