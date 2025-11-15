@@ -2,9 +2,10 @@
 #include "tpl_os.h"
 #include <avr/wdt.h>
 
-#define	A_WCET		200
-#define	B_WCET		700
-#define	C_WCET		300
+#define	A_WCET_CRITIC		200
+#define	B_WCET				700
+#define	C_WCET				300
+#define	C_WCET_CRITIC		200
 
 #define	A_PERIOD	1000
 #define	B_PERIOD	1500
@@ -55,13 +56,14 @@ void do_thingsC( int ms )
 TASK(TaskA)
 {
 	static int countA = 0;
-	GetResource(sharedRes);
 	countA++;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
-	do_thingsA(A_WCET);
+	GetResource(sharedRes);
+	Serial.println("Entering critical section of TaskA");
+	do_thingsA(A_WCET_CRITIC);
 	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
@@ -74,6 +76,7 @@ TASK(TaskA)
 		Serial.print("Finished TaskA at ");
 		Serial.println(end_A);
 	}
+	Serial.println("Exiting critical section of TaskA");
 	ReleaseResource(sharedRes);
 	TerminateTask();
 }
@@ -110,9 +113,10 @@ TASK(TaskC)
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
-	do_thingsC(100);  // Simulate processing
+	do_thingsC(C_WCET - C_WCET_CRITIC);
 	GetResource(sharedRes);
-	do_thingsC(C_WCET - 100);  // Simulate processing
+	Serial.println("Entering critical section of TaskC");
+	do_thingsC(C_WCET_CRITIC);
 	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
@@ -126,6 +130,7 @@ TASK(TaskC)
 		Serial.print("Finished TaskC at ");
 		Serial.println(end_C);
 	}
+	Serial.println("Exiting critical section of TaskC");
 	ReleaseResource(sharedRes);
 	TerminateTask();
 }
