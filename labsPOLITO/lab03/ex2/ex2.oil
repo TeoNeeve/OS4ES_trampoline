@@ -5,8 +5,8 @@ CPU three_tasks {
 		STATUS = STANDARD;
 		BUILD = TRUE {
     		TRAMPOLINE_BASE_PATH = "../../..";
-			APP_NAME = "ex1_arduino";
-			APP_SRC = "ex1.cpp";
+			APP_NAME = "ex2_arduino";
+			APP_SRC = "ex2.cpp";
 			CPPCOMPILER = "avr-g++";
     		COMPILER = "avr-gcc";
     		LINKER = "avr-gcc";
@@ -19,6 +19,10 @@ CPU three_tasks {
 	};
 
 	APPMODE stdAppmode {};
+
+	RESOURCE sharedRes {
+		RESOURCEPROPERTY = STANDARD;
+	};
 
 	ALARM activateA {
 		COUNTER = SystemCounter;
@@ -49,6 +53,7 @@ CPU three_tasks {
 		AUTOSTART = TRUE {APPMODE = stdAppmode;};
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
+		RESOURCE = sharedRes;
 	};
 
 	TASK TaskB {
@@ -63,6 +68,7 @@ CPU three_tasks {
 		AUTOSTART = TRUE {APPMODE = stdAppmode;};
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
+		RESOURCE = sharedRes;
 	};
 
 	TASK stop {

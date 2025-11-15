@@ -13,6 +13,7 @@
 DeclareAlarm(activateA);
 DeclareAlarm(activateB);
 DeclareAlarm(activateC);
+DeclareResource(sharedRes);
 
 
 void setup(void)
@@ -54,12 +55,14 @@ void do_thingsC( int ms )
 TASK(TaskA)
 {
 	static int countA = 0;
+	GetResource(sharedRes);
 	countA++;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
 	do_thingsA(A_WCET);
+	ReleaseResource(sharedRes);
 	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
@@ -107,7 +110,10 @@ TASK(TaskC)
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
-	do_thingsC(C_WCET);
+	do_thingsC(100);  // Simulate processing
+	GetResource(sharedRes);
+	do_thingsC(C_WCET - 100);  // Simulate processing
+	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");
