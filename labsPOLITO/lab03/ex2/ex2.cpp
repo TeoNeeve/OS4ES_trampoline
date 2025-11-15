@@ -62,7 +62,6 @@ TASK(TaskA)
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
 	do_thingsA(A_WCET);
-	ReleaseResource(sharedRes);
 	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
@@ -75,6 +74,7 @@ TASK(TaskA)
 		Serial.print("Finished TaskA at ");
 		Serial.println(end_A);
 	}
+	ReleaseResource(sharedRes);
 	TerminateTask();
 }
 
@@ -126,6 +126,7 @@ TASK(TaskC)
 		Serial.print("Finished TaskC at ");
 		Serial.println(end_C);
 	}
+	ReleaseResource(sharedRes);
 	TerminateTask();
 }
 
