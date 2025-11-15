@@ -58,7 +58,12 @@ TASK(TaskA)
 	int start_A = millis();
 	Serial.print("A ");
 	Serial.println(start_A);
-	do_thingsA(A_WCET);
+	if (countA == 1) {
+		do_thingsA(199);
+	}
+	else {
+		do_thingsA(A_WCET);
+	}
 	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("MissA ");
@@ -79,7 +84,7 @@ TASK(TaskB)
 	int start_B = millis();
 	Serial.print("B ");
 	Serial.println(start_B);
-	do_thingsB(B_WCET);
+	do_thingsB(700);
 	int end_B = millis();
 	if (end_B > deadline_B) {
 		Serial.print("MissB ");
@@ -100,7 +105,7 @@ TASK(TaskC)
 	int start_C = millis();
 	Serial.print("C ");
 	Serial.println(start_C);
-	do_thingsC(C_WCET);
+	do_thingsC(300);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("MissC ");

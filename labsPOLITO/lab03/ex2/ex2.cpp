@@ -3,8 +3,8 @@
 #include <avr/wdt.h>
 
 #define	A_WCET_CRITIC		200
-#define	B_WCET				700
-#define	C_WCET				300
+#define	B_WCET				698 // 700
+#define	C_WCET				299
 #define	C_WCET_CRITIC		200
 
 #define	A_PERIOD	1000
@@ -21,7 +21,7 @@ void setup(void)
 {
 	Serial.begin(115200);
 	delay(100);  // Give serial time to initialize
-	Serial.println("System starting...");
+	Serial.println("Start...");
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -59,21 +59,26 @@ TASK(TaskA)
 	countA++;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
-	Serial.print("A ");
+	Serial.print("startA ");
 	Serial.println(start_A);
 	GetResource(sharedRes);
-	Serial.println("A!");
-	do_thingsA(A_WCET_CRITIC);
+	Serial.println("critA");
+	if (countA == 1) {
+		do_thingsA(199);
+	}
+	else {
+		do_thingsA(A_WCET_CRITIC);
+	}
 	int end_A = millis();
 	if (end_A > deadline_A) {
-		Serial.print("MissA ");
+		Serial.print("missA ");
 		Serial.print(end_A - deadline_A);
 	}
 	else {
 		Serial.print("okA ");
 		Serial.println(end_A);
 	}
-	Serial.println("A?");
+	Serial.println("relA");
 	ReleaseResource(sharedRes);
 	TerminateTask();
 }
@@ -84,12 +89,12 @@ TASK(TaskB)
 	countB++;
 	int deadline_B = countB * B_PERIOD;
 	int start_B = millis();
-	Serial.print("B ");
+	Serial.print("startB ");
 	Serial.println(start_B);
 	do_thingsB(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
-		Serial.print("MissB ");
+		Serial.print("missB ");
 		Serial.print(end_B - deadline_B);
 	}
 	else {
@@ -105,23 +110,23 @@ TASK(TaskC)
 	countC++;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
-	Serial.print("C ");
+	Serial.print("startC ");
 	Serial.println(start_C);
 	do_thingsC(C_WCET - C_WCET_CRITIC);
 	GetResource(sharedRes);
-	Serial.println("C!");
+	Serial.println("critC");
+	// Serial.println(millis()); sballa tutto
 	do_thingsC(C_WCET_CRITIC);
-	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
-		Serial.print("MissC ");
+		Serial.print("missC ");
 		Serial.print(end_C - deadline_C);
 	}
 	else {
 		Serial.print("okC ");
 		Serial.println(end_C);
 	}
-	Serial.println("C?");
+	Serial.println("relC");
 	ReleaseResource(sharedRes);
 	TerminateTask();
 }
