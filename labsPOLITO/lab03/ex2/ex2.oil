@@ -27,8 +27,8 @@ CPU three_tasks {
 	ALARM activateA {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskA; }; /* 1000 * 1000/1024 = 976.5625 */
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 977; CYCLETIME = 977; };
-	};
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 980; CYCLETIME = 977; };
+	};													/*era 977*/
 
 	ALARM activateB {
 		COUNTER = SystemCounter;

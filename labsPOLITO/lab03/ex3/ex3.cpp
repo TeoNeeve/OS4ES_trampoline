@@ -10,24 +10,14 @@
 #define	A_PERIOD	1000
 #define	B_PERIOD	1500
 #define	C_PERIOD	2800
-//////////////////////////////////////////
-#define LED_DEBUG 12 /////////////////////
-//////////////////////////////////////////
+
 DeclareAlarm(activateA);
 DeclareAlarm(activateB);
 DeclareAlarm(activateC);
-//////////////////////////////////////////////////////
-void blink(void)//////////////////////////////////////
-{   											//////
-    static bool led_state = false;				//////
-    led_state = !led_state;						//////
-    digitalWrite(LED_DEBUG, led_state ? HIGH : LOW);//
-}/////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+
 void setup(void)
 {
 	Serial.begin(115200);
-	pinMode(LED_DEBUG, OUTPUT);
 	delay(100);  // Give serial time to initialize
 	Serial.println("Start...");
     StartOS(OSDEFAULTAPPMODE);
@@ -44,7 +34,6 @@ TASK(MsgInit)
 {
 	int FreeCriticalMsg = 0;
     SendMessage(send_CriticalMessage, &FreeCriticalMsg);
-	blink();//////////////////////////////////////////////////////
     TerminateTask();
 }
 
@@ -61,17 +50,15 @@ TASK(TaskA)
 	countA++;
 	int ReceivedMsgA;
 	int FreeCriticalMsg = 0;
-	// int BusyCriticalMsg = 1;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
-	Serial.print("sA ");
+	Serial.print("sA "); // ferma qua durante A2
 	Serial.println(start_A);
 
-	do {
+	do { 
     	ReceiveMessage(CriticalMessage, &ReceivedMsgA);
 	} while (ReceivedMsgA != E_OK);
-	blink();//////////////////////////////////////////////////////
-	// SendMessage(send_CriticalMessage, &BusyCriticalMsg);
+
 	Serial.println("cA");
 	if (countA == 1) {
 		do_things(199);
@@ -91,7 +78,6 @@ TASK(TaskA)
 	Serial.println("rA");
 
 	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
-	blink();//////////////////////////////////////////////////////
 	TerminateTask();
 }
 
@@ -122,7 +108,6 @@ TASK(TaskC)
 	countC++;
 	int ReceivedMsgC;
 	int FreeCriticalMsg = 0;
-	// int BusyCriticalMsg = 1;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
 	Serial.print("sC ");
@@ -132,8 +117,6 @@ TASK(TaskC)
 	do {
     	ReceiveMessage(CriticalMessage, &ReceivedMsgC);
 	} while (ReceivedMsgC != E_OK);
-	blink();//////////////////////////////////////////////////////
-	// SendMessage(send_CriticalMessage, &BusyCriticalMsg);
 
 	Serial.println("cC");
 	do_things(C_WCET_CRITIC);
@@ -149,7 +132,6 @@ TASK(TaskC)
 	Serial.println("rC");
 
 	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
-	blink();//////////////////////////////////////////////////////
 	TerminateTask();
 }
 
