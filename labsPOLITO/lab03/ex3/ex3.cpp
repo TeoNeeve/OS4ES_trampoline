@@ -19,7 +19,7 @@ DeclareAlarm(activateC);
 void setup(void)
 {
 	Serial.begin(115200);
-	delay(100);  // Give serial time to initialize
+	delay(100);
 	Serial.println("System starting...");
     StartOS(OSDEFAULTAPPMODE);
 }
@@ -51,7 +51,6 @@ TASK(TaskA)
 	countA++;
 	int ReceivedMsgA;
 	int FreeCriticalMsg = 0;
-	int BusyCriticalMsg = 1;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
@@ -60,8 +59,6 @@ TASK(TaskA)
 	do {
     	ReceiveMessage(CriticalMessage, &ReceivedMsgA);
 	} while (ReceivedMsgA != 0);
-
-	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
 
 	Serial.println("Entering critical section of TaskA");
 	do_things(A_WCET_CRITIC);
@@ -77,9 +74,10 @@ TASK(TaskA)
 		Serial.print("Finished TaskA at ");
 		Serial.println(end_A);
 	}
-	Serial.println("Exiting critical section of TaskA");
 
+	Serial.println("Exiting critical section of TaskA");
 	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
+
 	TerminateTask();
 }
 
@@ -113,7 +111,6 @@ TASK(TaskC)
 	countC++;
 	int ReceivedMsgC;
 	int FreeCriticalMsg = 0;
-	int BusyCriticalMsg = 1;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
@@ -123,10 +120,8 @@ TASK(TaskC)
 	do {
     	ReceiveMessage(CriticalMessage, &ReceivedMsgC);
 	} while (ReceivedMsgC != 0);
-
-	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
-
 	Serial.println("Entering critical section of TaskC");
+
 	do_things(C_WCET_CRITIC);
 	int end_C = millis();
 	if (end_C > deadline_C) {
@@ -140,9 +135,10 @@ TASK(TaskC)
 		Serial.print("Finished TaskC at ");
 		Serial.println(end_C);
 	}
-	Serial.println("Exiting critical section of TaskC");
 
+	Serial.println("Exiting critical section of TaskC");
 	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
+
 	TerminateTask();
 }
 

@@ -18,7 +18,7 @@ DeclareAlarm(activateC);
 void setup(void)
 {
 	Serial.begin(115200);
-	delay(100);  // Give serial time to initialize
+	delay(100);
 	Serial.println("System starting...");
     StartOS(OSDEFAULTAPPMODE);
 }
@@ -30,22 +30,8 @@ void loop(void)
     }
 }
 
-void do_thingsA( int ms )
+void do_things( int ms )
 {
-	unsigned long mul = ms * 504UL;
-	unsigned long i;
-	for(i=0; i<mul; i++) millis();
-}
-
-void do_thingsB( int ms )
-{
-	unsigned long mul = ms * 504UL;
-	unsigned long i;
-	for(i=0; i<mul; i++) millis();
-}
-
-void do_thingsC( int ms )
-{ 
 	unsigned long mul = ms * 504UL;
 	unsigned long i;
 	for(i=0; i<mul; i++) millis();
@@ -59,7 +45,7 @@ TASK(TaskA)
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
-	do_thingsA(A_WCET);
+	do_things(A_WCET);
 	int end_A = millis();
 	if (end_A > deadline_A) {
 		Serial.print("TaskA missed its deadline of ");
@@ -83,7 +69,7 @@ TASK(TaskB)
 	int start_B = millis();
 	Serial.print("Started TaskB at ");
 	Serial.println(start_B);
-	do_thingsB(B_WCET);
+	do_things(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
 		Serial.print("TaskB missed its deadline of ");
@@ -107,7 +93,7 @@ TASK(TaskC)
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
-	do_thingsC(C_WCET);
+	do_things(C_WCET);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");

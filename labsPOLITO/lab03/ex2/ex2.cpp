@@ -20,7 +20,7 @@ DeclareResource(sharedRes);
 void setup(void)
 {
 	Serial.begin(115200);
-	delay(100);  // Give serial time to initialize
+	delay(100);
 	Serial.println("System starting...");
     StartOS(OSDEFAULTAPPMODE);
 }
@@ -47,8 +47,10 @@ TASK(TaskA)
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
+
 	GetResource(sharedRes);
 	Serial.println("Entering critical section of TaskA");
+
 	do_things(A_WCET_CRITIC);
 	int end_A = millis();
 	if (end_A > deadline_A) {
@@ -62,8 +64,10 @@ TASK(TaskA)
 		Serial.print("Finished TaskA at ");
 		Serial.println(end_A);
 	}
+
 	Serial.println("Exiting critical section of TaskA");
 	ReleaseResource(sharedRes);
+
 	TerminateTask();
 }
 
@@ -100,8 +104,10 @@ TASK(TaskC)
 	Serial.print("Started TaskC at ");
 	Serial.println(start_C);
 	do_things(C_WCET - C_WCET_CRITIC);
+
 	GetResource(sharedRes);
 	Serial.println("Entering critical section of TaskC");
+
 	do_things(C_WCET_CRITIC);
 	ReleaseResource(sharedRes);
 	int end_C = millis();
@@ -116,8 +122,10 @@ TASK(TaskC)
 		Serial.print("Finished TaskC at ");
 		Serial.println(end_C);
 	}
+
 	Serial.println("Exiting critical section of TaskC");
 	ReleaseResource(sharedRes);
+	
 	TerminateTask();
 }
 
