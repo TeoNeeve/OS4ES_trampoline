@@ -20,7 +20,7 @@ void setup(void)
 {
 	Serial.begin(115200);
 	delay(100);  // Give serial time to initialize
-	Serial.println("System starting...");
+	Serial.println("Start...");
     StartOS(OSDEFAULTAPPMODE);
 }
 
@@ -88,7 +88,7 @@ TASK(TaskB)
 	int start_B = millis();
 	Serial.print("startB ");
 	Serial.println(start_B);
-	do_thingsB(B_WCET);
+	do_things(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
 		Serial.print("missB ");
