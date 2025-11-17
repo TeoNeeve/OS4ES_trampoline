@@ -33,7 +33,7 @@ void loop(void)
 
 TASK(MsgInit)
 {
-	int FreeCriticalMsg = 1;
+	int FreeCriticalMsg = 0;
     SendMessage(send_CriticalMessage, &FreeCriticalMsg);
     TerminateTask();
 }
@@ -49,15 +49,19 @@ TASK(TaskA)
 {
 	static int countA = 0;
 	countA++;
+	int ReceivedMsgA;
 	int FreeCriticalMsg = 0;
+	int BusyCriticalMsg = 1;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
 
 	do {
-    	ReceiveMessage(CriticalMessage, &FreeCriticalMsg);
-	} while (FreeCriticalMsg != 1);
+    	ReceiveMessage(CriticalMessage, &ReceivedMsgA);
+	} while (ReceivedMsgA != 0);
+
+	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
 
 	Serial.println("Entering critical section of TaskA");
 	do_things(A_WCET_CRITIC);
@@ -107,7 +111,9 @@ TASK(TaskC)
 {
 	static int countC = 0;
 	countC++;
-	int FreeCriticalMsg = 1;
+	int ReceivedMsgC;
+	int FreeCriticalMsg = 0;
+	int BusyCriticalMsg = 1;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
@@ -115,8 +121,10 @@ TASK(TaskC)
 	do_things(C_WCET - C_WCET_CRITIC);
 
 	do {
-    	ReceiveMessage(CriticalMessage, &FreeCriticalMsg);
-	} while (FreeCriticalMsg != 0);
+    	ReceiveMessage(CriticalMessage, &ReceivedMsgC);
+	} while (ReceivedMsgC != 0);
+
+	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
 
 	Serial.println("Entering critical section of TaskC");
 	do_things(C_WCET_CRITIC);
