@@ -2,9 +2,10 @@
 #include "tpl_os.h"
 #include <avr/wdt.h>
 
-#define	A_WCET		200
-#define	B_WCET		700
-#define	C_WCET		300
+#define	A_WCET_CRITIC		200
+#define	B_WCET				700
+#define	C_WCET				300
+#define	C_WCET_CRITIC		200
 
 #define	A_PERIOD	1000
 #define	B_PERIOD	1500
@@ -30,9 +31,10 @@ void loop(void)
     }
 }
 
-TASK(InitTask)
+TASK(MsgInit)
 {
-    SendMessage(CriticalMessage, 0);
+	int FreeCriticalMsg = 0;
+    SendMessage(send_CriticalMessage, &FreeCriticalMsg);
     TerminateTask();
 }
 
@@ -47,33 +49,34 @@ TASK(TaskA)
 {
 	static int countA = 0;
 	countA++;
-	StatusType CriticalA;
+	int ReceivedMsgA;
+	int FreeCriticalMsg = 0;
+	int BusyCriticalMsg = 1;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
-	Serial.print("Started TaskA at ");
+	Serial.print("startA ");
 	Serial.println(start_A);
 
 	do {
-    	CriticalA = ReceiveMessage(CriticalMessage);
-	} while (CriticalA != E_OK);
+    	ReceiveMessage(CriticalMessage, &ReceivedMsgA);
+	} while (ReceivedMsgA != 0);
 
-	Serial.println("Entering critical section of TaskA");
+	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
+
+	Serial.println("critA");
 	do_things(A_WCET_CRITIC);
 	int end_A = millis();
 	if (end_A > deadline_A) {
-		Serial.print("TaskA missed its deadline of ");
-		Serial.print(deadline_A);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_A);
-		Serial.println(" ms)");
+		Serial.print("missA ");
+		Serial.print(end_A - deadline_A);
 	}
 	else {
-		Serial.print("Finished TaskA at ");
+		Serial.print("okA ");
 		Serial.println(end_A);
 	}
-	Serial.println("Exiting critical section of TaskA");
+	Serial.println("relA");
 
-	sendMessage(CriticalMessage, 0);
+	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
 	TerminateTask();
 }
 
@@ -83,19 +86,16 @@ TASK(TaskB)
 	countB++;
 	int deadline_B = countB * B_PERIOD;
 	int start_B = millis();
-	Serial.print("Started TaskB at ");
+	Serial.print("startB ");
 	Serial.println(start_B);
-	do_things(B_WCET);
+	do_thingsB(B_WCET);
 	int end_B = millis();
 	if (end_B > deadline_B) {
-		Serial.print("TaskB missed its deadline of ");
-		Serial.print(deadline_B);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_B);
-		Serial.println(" ms)");
+		Serial.print("missB ");
+		Serial.print(end_B - deadline_B);
 	}
 	else {
-		Serial.print("Finished TaskB at ");
+		Serial.print("okB ");
 		Serial.println(end_B);
 	}
 	TerminateTask();
@@ -105,35 +105,35 @@ TASK(TaskC)
 {
 	static int countC = 0;
 	countC++;
-	StatusType CriticalA;
+	int ReceivedMsgC;
+	int FreeCriticalMsg = 0;
+	int BusyCriticalMsg = 1;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
-	Serial.print("Started TaskC at ");
+	Serial.print("startC ");
 	Serial.println(start_C);
 	do_things(C_WCET - C_WCET_CRITIC);
 
 	do {
-    	CriticalA = ReceiveMessage(CriticalMessage);
-	} while (CriticalA != E_OK);
+    	ReceiveMessage(CriticalMessage, &ReceivedMsgC);
+	} while (ReceivedMsgC != 0);
 
-	Serial.println("Entering critical section of TaskC");
+	SendMessage(send_CriticalMessage, &BusyCriticalMsg);
+
+	Serial.println("critC");
 	do_things(C_WCET_CRITIC);
-	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
-		Serial.print("TaskC missed its deadline of ");
-		Serial.print(deadline_C);
-		Serial.print(" ms (finished at ");
-		Serial.print(end_C);
-		Serial.println(" ms)");
+		Serial.print("missC ");
+		Serial.print(end_C - deadline_C);
 	}
 	else {
-		Serial.print("Finished TaskC at ");
+		Serial.print("okC ");
 		Serial.println(end_C);
 	}
-	Serial.println("Exiting critical section of TaskC");
+	Serial.println("relC");
 
-	sendMessage(CriticalMessage, 0);
+	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
 	TerminateTask();
 }
 
