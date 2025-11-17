@@ -1,0 +1,296 @@
+
+{
+  "alarm" : 
+  [
+    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskA"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 977,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 977
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "activateA"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskB"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 1465,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 1465
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "activateB"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskC"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 2734,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 2734
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "activateC"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "MsgInit"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 1,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 0
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "activateMsgInit"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "stop"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 60000,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 0
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "stopper"
+    }
+  ],
+  "event" : [],
+  "ioc" : [],
+  "isr" : [],
+  "message" : 
+  [
+    
+    {
+      "MESSAGEPROPERTY" : "RECEIVE_QUEUED_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "QUEUESIZE" : 1,
+        "SENDINGMESSAGE" : "send_CriticalMessage"
+      },
+      "NAME" : "CriticalMessage",
+      "NOTIFICATION" : "NONE",
+      "NOTIFICATIONERROR" : "NONE"
+    },    
+    {
+      "MESSAGEPROPERTY" : "SEND_STATIC_INTERNAL",
+      "MESSAGEPROPERTY_S" : 
+      {
+        "CDATATYPE" : "int"
+      },
+      "NAME" : "send_CriticalMessage",
+      "NOTIFICATION" : "NONE",
+      "NOTIFICATIONERROR" : "NONE"
+    }
+  ],
+  "resource" : 
+  [
+    
+    {
+      "ISRUSAGE" : [],
+      "KIND" : "Resource",
+      "NAME" : "INTERNAL_RES_SCHEDULER",
+      "PRIORITY" : 5,
+      "RESOURCEPROPERTY" : "INTERNAL",
+      "TASKUSAGE" : 
+      [
+        
+        {
+          "VALUE" : "MsgInit"
+        }
+      ]
+    }
+  ],
+  "task" : 
+  [
+    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "CriticalMessage"
+        },        
+        {
+          "VALUE" : "send_CriticalMessage"
+        }
+      ],
+      "NAME" : "TaskC",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskB",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 2,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "CriticalMessage"
+        },        
+        {
+          "VALUE" : "send_CriticalMessage"
+        }
+      ],
+      "NAME" : "TaskA",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 3,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "MESSAGE" : 
+      [
+        
+        {
+          "VALUE" : "send_CriticalMessage"
+        }
+      ],
+      "NAME" : "MsgInit",
+      "NONPREEMPTABLE" : "true",
+      "PRIORITY" : 4,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "INTERNAL_RES_SCHEDULER"
+        }
+      ],
+      "SCHEDULE" : "NON",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "stop",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 6,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    }
+  ]
+}

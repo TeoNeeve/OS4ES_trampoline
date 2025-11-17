@@ -2,9 +2,10 @@
 #include "tpl_os.h"
 #include <avr/wdt.h>
 
-#define	A_WCET		200
-#define	B_WCET		700
-#define	C_WCET		300
+#define	A_WCET_CRITIC		200
+#define	B_WCET				700
+#define	C_WCET				300
+#define	C_WCET_CRITIC		200
 
 #define	A_PERIOD	1000
 #define	B_PERIOD	1500
@@ -30,9 +31,10 @@ void loop(void)
     }
 }
 
-TASK(InitTask)
+TASK(MsgInit)
 {
-    SendMessage(CriticalMessage, 0);
+	int FreeCriticalMsg = 1;
+    SendMessage(send_CriticalMessage, &FreeCriticalMsg);
     TerminateTask();
 }
 
@@ -47,15 +49,15 @@ TASK(TaskA)
 {
 	static int countA = 0;
 	countA++;
-	StatusType CriticalA;
+	int FreeCriticalMsg = 0;
 	int deadline_A = countA * A_PERIOD;
 	int start_A = millis();
 	Serial.print("Started TaskA at ");
 	Serial.println(start_A);
 
 	do {
-    	CriticalA = ReceiveMessage(CriticalMessage);
-	} while (CriticalA != E_OK);
+    	ReceiveMessage(CriticalMessage, &FreeCriticalMsg);
+	} while (FreeCriticalMsg != 1);
 
 	Serial.println("Entering critical section of TaskA");
 	do_things(A_WCET_CRITIC);
@@ -73,7 +75,7 @@ TASK(TaskA)
 	}
 	Serial.println("Exiting critical section of TaskA");
 
-	sendMessage(CriticalMessage, 0);
+	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
 	TerminateTask();
 }
 
@@ -105,7 +107,7 @@ TASK(TaskC)
 {
 	static int countC = 0;
 	countC++;
-	StatusType CriticalA;
+	int FreeCriticalMsg = 1;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
 	Serial.print("Started TaskC at ");
@@ -113,12 +115,11 @@ TASK(TaskC)
 	do_things(C_WCET - C_WCET_CRITIC);
 
 	do {
-    	CriticalA = ReceiveMessage(CriticalMessage);
-	} while (CriticalA != E_OK);
+    	ReceiveMessage(CriticalMessage, &FreeCriticalMsg);
+	} while (FreeCriticalMsg != 0);
 
 	Serial.println("Entering critical section of TaskC");
 	do_things(C_WCET_CRITIC);
-	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");
@@ -133,7 +134,7 @@ TASK(TaskC)
 	}
 	Serial.println("Exiting critical section of TaskC");
 
-	sendMessage(CriticalMessage, 0);
+	SendMessage(send_CriticalMessage, &FreeCriticalMsg);
 	TerminateTask();
 }
 

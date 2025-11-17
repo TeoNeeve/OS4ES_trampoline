@@ -51,23 +51,24 @@ CPU three_tasks {
 	};
 
 	MESSAGE send_CriticalMessage {
-		MESSAGEPROPERTY = RECEIVE_ZERO_INTERNAL;
+		MESSAGEPROPERTY = SEND_STATIC_INTERNAL {
+			CDATATYPE = "int";
+		};
 	};
 
 	MESSAGE CriticalMessage {
-		MESSAGEPROPERTY = RECEIVE_ZERO_INTERNAL {
+		MESSAGEPROPERTY = RECEIVE_QUEUED_INTERNAL {
 			SENDINGMESSAGE = send_CriticalMessage;
 			QUEUESIZE = 1;
 		};
 	};
-	
 
 	TASK MsgInit {
 	    PRIORITY = 4;
 		AUTOSTART = TRUE {APPMODE = stdAppmode;};
 	    ACTIVATION = 1;
     	SCHEDULE = NON;
-    	MESSAGE = CriticalMessage;
+    	MESSAGE = send_CriticalMessage;
 	};
 
 	TASK TaskA {
@@ -75,8 +76,8 @@ CPU three_tasks {
 		AUTOSTART = TRUE {APPMODE = stdAppmode;};
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-	    RECEIVEMESSAGE = CriticalMessage;
-    	SENDMESSAGE = send_CriticalMessage;
+	    MESSAGE = CriticalMessage;
+    	MESSAGE = send_CriticalMessage;
 	};
 
 	TASK TaskB {
@@ -91,8 +92,8 @@ CPU three_tasks {
 		AUTOSTART = TRUE {APPMODE = stdAppmode;};
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
-		RECEIVEMESSAGE = CriticalMessage;
-    	SENDMESSAGE = send_CriticalMessage;
+		MESSAGE = CriticalMessage;
+    	MESSAGE = send_CriticalMessage;
 	};
 
 	TASK stop {
