@@ -6,18 +6,6 @@
 
 <item itemtype="SerialTerm" CircId="SerialTerm-2" mainComp="false" ShowProp="Baudrate" Show_id="false" Show_Val="true" Pos="-100,-136" rotation="0" hflip="1" vflip="1" label="SerialTerm-2" idLabPos="-20,-32" labelrot="0" valLabPos="-16,20" valLabRot="0" Baudrate="115200 _Bd" DataBits="8 _bits" StopBits="1 _bits" SerialMon="true" />
 
-<item itemtype="Ground" CircId="Ground-6" mainComp="false" Show_id="false" Show_Val="false" Pos="-276,32" rotation="0" hflip="1" vflip="1" label="Ground-6" idLabPos="-16,8" labelrot="0" valLabPos="-16,20" valLabRot="0" />
-
-<item itemtype="Resistor" CircId="Resistor-8" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-244,8" rotation="0" hflip="1" vflip="1" label="Resistor-8" idLabPos="-16,-24" labelrot="0" valLabPos="-16,6" valLabRot="0" Resistance="100 Ω" />
-
-<item itemtype="Led" CircId="Led-10" mainComp="false" Show_id="false" Show_Val="false" Pos="-200,8" rotation="180" hflip="1" vflip="1" label="Led-10" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="30 mA" Resistance="0.6 Ω" />
-
 <item itemtype="Connector" uid="Connector-9" startpinid="SerialTerm-2-pin1" endpinid="Uno-1-1" pointList="-124,-128,-168,-128,-168,-72,-156,-72" />
-
-<item itemtype="Connector" uid="Connector-10" startpinid="Ground-6-Gnd" endpinid="Resistor-8-lPin" pointList="-276,16,-276,8,-260,8" />
-
-<item itemtype="Connector" uid="Connector-13" startpinid="Resistor-8-rPin" endpinid="Led-10-rPin" pointList="-228,8,-216,8" />
-
-<item itemtype="Connector" uid="Connector-15" startpinid="Led-10-lPin" endpinid="Uno-1-12" pointList="-184,8,-184,24,-156,24" />
 
 </circuit>

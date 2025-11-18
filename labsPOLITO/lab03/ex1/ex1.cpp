@@ -108,10 +108,10 @@ TASK(TaskB)
 TASK(TaskC)
 {
 	static int countC = 0;
+	Serial.print("startC ");
 	countC++;
 	int deadline_C = countC * C_PERIOD;
 	int start_C = millis();
-	Serial.print("startC ");
 	Serial.println(start_C);
 	do_thingsC(C_WCET);
 	int end_C = millis();

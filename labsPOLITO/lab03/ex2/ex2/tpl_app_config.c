@@ -852,7 +852,7 @@ VAR(tpl_time_obj, OS_VAR) activateA_alarm_desc = {
     /* next alarm                   */  NULL,
     /* prev alarm                   */  NULL,
     /* cycle                        */  977,
-    /* date                         */  977,
+    /* date                         */  980,
     /* State of the alarm           */  ALARM_AUTOSTART
 };
 
