@@ -109,7 +109,6 @@ TASK(TaskC)
 	Serial.println("Entering critical section of TaskC");
 
 	do_things(C_WCET_CRITIC);
-	ReleaseResource(sharedRes);
 	int end_C = millis();
 	if (end_C > deadline_C) {
 		Serial.print("TaskC missed its deadline of ");
