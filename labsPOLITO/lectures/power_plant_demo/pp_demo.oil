@@ -1,0 +1,148 @@
+/* 
+   System with two basic tasks:
+   Task1: producer
+   Task2: consumer
+*/
+    
+OIL_VERSION = "2.5";
+
+IMPLEMENTATION trampoline {
+
+    /* This fix the default STACKSIZE of tasks */
+    TASK {
+        UINT32 STACKSIZE = 32768 ;
+    } ;
+
+    /* This fix the default STACKSIZE of ISRs */
+    ISR {
+        UINT32 STACKSIZE = 32768 ;
+    } ;
+};
+
+CPU pp_demo {
+  OS config {
+    STATUS = EXTENDED;
+	TRACE = TRUE {
+		FORMAT = json;
+		PROC = TRUE;
+        RESOURCE = TRUE;
+        ALARM = TRUE;
+        EVENT = TRUE;
+    };
+    BUILD = TRUE {
+      APP_SRC = "pp_demo.c";
+      APP_SRC = "tpl_os_hooks.c";
+      TRAMPOLINE_BASE_PATH = "../../..";
+      CFLAGS="-ggdb";
+      APP_NAME = "pp_demo.exe";
+      LINKER = "gcc";
+      SYSTEM = PYTHON;
+    };
+  };
+  
+  APPMODE stdAppmode {};
+
+  EVENT TX_go {
+	MASK = AUTO;
+  };
+
+  EVENT TX_kill {
+	MASK = AUTO;
+  };
+  
+  ALARM alarm_250ms {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = Acq_AB; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 250; CYCLETIME = 250; };
+  };
+
+  ALARM display_alarm_250ms {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = display; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 250; CYCLETIME = 250; };
+  };
+
+  ALARM alarm_500ms {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = Acq_CD; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 500; CYCLETIME = 500; };
+  };
+
+  ALARM emergency_alarm_100ms {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = TX_emergency; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 0; };
+  };
+  
+  ALARM resume_450ms {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = resume_operations; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 450; CYCLETIME = 0; };
+  };
+
+  ALARM stopper {
+    COUNTER = SystemCounter;
+    ACTION = ACTIVATETASK { TASK = stop; };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 2000; CYCLETIME = 0; };
+  };
+
+  ALARM Ticker {
+    COUNTER = SystemCounter;
+    ACTION  = ALARMCALLBACK {
+        ALARMCALLBACKNAME = "TickerCb";   /* function to call */
+    };
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 1; };
+  };
+
+  TASK Acq_AB {
+    PRIORITY = 4;
+    AUTOSTART = TRUE {APPMODE = stdAppmode;};
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK Acq_CD {
+    PRIORITY = 3;
+    AUTOSTART = TRUE {APPMODE = stdAppmode;};
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK display {
+    PRIORITY = 2;
+    AUTOSTART = TRUE {APPMODE = stdAppmode;};
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK TX_normal {
+    PRIORITY = 1;
+    AUTOSTART = TRUE {APPMODE = stdAppmode;};
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    EVENT = TX_go;
+    EVENT = TX_kill;
+  };
+
+  TASK TX_emergency {
+    PRIORITY = 16;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK resume_operations {
+    PRIORITY = 16;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK stop {
+    PRIORITY = 99;
+    AUTOSTART = FALSE;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+  
+};
