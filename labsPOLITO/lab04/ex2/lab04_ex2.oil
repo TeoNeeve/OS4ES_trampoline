@@ -1,0 +1,27 @@
+OIL_VERSION = "2.5";
+
+CPU three_tasks {
+	OS config {
+		STATUS = STANDARD;
+		BUILD = TRUE {
+    		TRAMPOLINE_BASE_PATH = "../../..";
+			APP_NAME = "ex2_arduino";
+			APP_SRC = "ex2.cpp";
+			CPPCOMPILER = "avr-g++";
+    		COMPILER = "avr-gcc";
+    		LINKER = "avr-gcc";
+    		ASSEMBLER = "avr-gcc";
+    		COPIER = "avr-objcopy";
+    		SYSTEM = PYTHON;
+			LIBRARY = serial;
+    	};
+    SYSTEM_CALL = TRUE;
+	};
+
+	APPMODE stdAppmode {};
+
+
+
+
+    
+}
