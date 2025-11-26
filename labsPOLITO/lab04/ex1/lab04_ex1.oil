@@ -48,7 +48,15 @@ CPU three_tasks {
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 100; };
 	};
 
+	TASK Blink {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+
 	TASK TaskV {
+		PRIORITY = 3;
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
