@@ -1,0 +1,177 @@
+
+{
+  "alarm" : 
+  [
+    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "Blink"
+      },
+      "AUTOSTART" : "false",
+      "COUNTER" : "SystemCounter",
+      "NAME" : "AlarmBlink"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskS"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 100,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 100
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "a100msec"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskV"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 125,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 125
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "a125msecV"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskB"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 500,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 500
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "a500msec"
+    }
+  ],
+  "event" : [],
+  "ioc" : [],
+  "isr" : [],
+  "message" : [],
+  "resource" : 
+  [
+    
+    {
+      "ISRUSAGE" : [],
+      "KIND" : "Resource",
+      "NAME" : "sharedRes",
+      "PRIORITY" : 1,
+      "RESOURCEPROPERTY" : "STANDARD",
+      "TASKUSAGE" : []
+    }
+  ],
+  "task" : 
+  [
+    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "false",
+      "KIND" : "Task",
+      "NAME" : "Blink",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 2,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskB",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 3,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskV",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 4,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskS",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 5,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    }
+  ]
+}

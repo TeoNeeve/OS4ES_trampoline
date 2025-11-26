@@ -77,7 +77,4 @@ CPU three_tasks {
 		SCHEDULE = FULL;
 	};
 
-
-
-
-}
+};

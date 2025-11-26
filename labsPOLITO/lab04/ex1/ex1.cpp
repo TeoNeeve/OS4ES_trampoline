@@ -8,6 +8,7 @@
 DeclareAlarm(a500msec);
 DeclareAlarm(a125msec);
 DeclareAlarm(a100msec);
+DeclareAlarm(AlarmBlink);
 
 void setup(void)
 {
@@ -26,30 +27,56 @@ void loop(void)
 
 TASK(TaskS)
 {
-    int A0_valueADC = analogRead(A0);
-    string SensorReadings[K]
-    static int ReadingIndex = 0;
-    if (ReadingIndex < K) {
-        SensorReadings[K] =
+    int X = analogRead(A0);
+    static int Q[K];
+    static int SensorIndex = 0;
+    static int error = 0;
+    if (X < 10 || X > 1013) {
+        error = 0;
+        if (SensorIndex < K) {
+            Q[SensorIndex] = X;
+        } else {
+            Serial.print("Queue overflow by ");
+            Serial.println(SensorIndex - K + 1);
+        }
     } else {
-
+        error = 1;
     }
-    
-    ReadingIndex++;
+    SensorIndex++;
     TerminateTask();
 }
 
 TASK(TaskB)
 {
-    ReadingIndex = 0;
+    int Q[K];
+    int SensorIndex;
+    int N;
+    int M;
+    static int alarm = 0;
+    SensorIndex = 0;
+    M = Q[0];
+    N = Q[0];
+    for (int i = 1; i < K; ++i) {
+        if (Q[i] > M) {
+            M = Q[i];
+        }
+        if (Q[i] < N) {
+            N = Q[i];
+        }
+    }
+    if (M - N > 500) {
+        alarm = 1;
+    } else {
+        alarm = 0;
+    }
 
     TerminateTask();
 }
 
 TASK(TaskV)
 {
-    int error
-    int alarm
+    int alarm;
+    int error;
     if (error == 1) {
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
@@ -63,5 +90,10 @@ TASK(TaskV)
     TerminateTask();
 }
 
-
-
+TASK(Blink)
+{   
+    static bool led_state = false;
+    led_state = !led_state;
+    digitalWrite(LED_PIN, led_state ? HIGH : LOW);
+    TerminateTask();
+}
