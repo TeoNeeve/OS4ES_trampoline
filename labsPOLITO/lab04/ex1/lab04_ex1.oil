@@ -65,7 +65,7 @@ CPU three_tasks {
 
 	TASK TaskB {
 		PRIORITY = 3;
-		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		AUTOSTART = FALSE; /* non ha senso analizzare dopo 1 lettura */
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 		RESOURCE = SensorRes;
