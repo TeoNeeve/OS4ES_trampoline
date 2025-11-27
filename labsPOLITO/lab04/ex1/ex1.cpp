@@ -44,12 +44,12 @@ TASK(TaskS)
         error = 0;
         if (SensorIndex < K) {
             Q[SensorIndex] = X;
+            SensorIndex++;
         } else {
             Serial.print("Queue overflow by ");
             Serial.println(SensorIndex - K + 1);
         }
     }
-    SensorIndex++;
 
     ReleaseResource(SensorRes);
     TerminateTask();
@@ -99,7 +99,6 @@ TASK(TaskV)
         CancelAlarm(AlarmBlink);
         digitalWrite(LED_PIN, LOW); // OFF
         Serial.println("SPENTO, errore e alarm 0"); // DEBUGGING ############
-
     }
 
     ReleaseResource(SensorRes);
