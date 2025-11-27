@@ -186,7 +186,7 @@
 /*-----------------------------------------------------------------------------
  * Priority of RES_SCHEDULER
  */
-#define RES_SCHEDULER_PRIORITY 6
+#define RES_SCHEDULER_PRIORITY 5
 
 #define IDLE_TASK_ID    TASK_COUNT + ISR_COUNT
 

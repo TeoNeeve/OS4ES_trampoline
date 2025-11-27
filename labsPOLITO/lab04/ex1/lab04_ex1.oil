@@ -20,7 +20,7 @@ CPU three_tasks {
 
 	APPMODE stdAppmode {};
 
-	RESOURCE sharedRes {
+	RESOURCE SensorRes {
 		RESOURCEPROPERTY = STANDARD;
 	};
 
@@ -28,6 +28,12 @@ CPU three_tasks {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = Blink; };
 		AUTOSTART = FALSE;
+	};
+
+	ALARM a100msec {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskS; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 100; };
 	};
 
 	ALARM a500msec {
@@ -42,30 +48,9 @@ CPU three_tasks {
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 125; CYCLETIME = 125; };
 	};
 
-	ALARM a100msec {
-		COUNTER = SystemCounter;
-		ACTION = ACTIVATETASK { TASK = TaskS; };
-		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 100; };
-	};
-
 	TASK Blink {
 		PRIORITY = 1;
 		AUTOSTART = FALSE;
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-	};
-
-	TASK TaskV {
-		PRIORITY = 3;
-		AUTOSTART = TRUE { APPMODE = stdAppmode; };
-		ACTIVATION = 1;
-		SCHEDULE = FULL;
-	};
-
-
-	TASK TaskB {
-		PRIORITY = 2;
-		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 	};
@@ -75,6 +60,23 @@ CPU three_tasks {
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
+	};
+
+	TASK TaskB {
+		PRIORITY = 3;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
+	};
+
+	TASK TaskV {
+		PRIORITY = 2;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
 	};
 
 };

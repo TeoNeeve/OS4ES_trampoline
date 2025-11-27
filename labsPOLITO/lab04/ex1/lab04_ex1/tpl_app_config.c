@@ -54,8 +54,8 @@ CONST(tpl_application_mode, OS_CONST) stdAppmode = 0; /* mask = 1 */
 CONST(tpl_application_mode, OS_CONST) OSDEFAULTAPPMODE = 0;
 CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   0 /* task Blink :  */ ,
-  1 /* task TaskB : stdAppmode */ ,
   1 /* task TaskV : stdAppmode */ ,
+  1 /* task TaskB : stdAppmode */ ,
   1 /* task TaskS : stdAppmode */ 
 };
 
@@ -73,9 +73,9 @@ CONST(tpl_appmode_mask, OS_CONST) tpl_alarm_app_mode[ALARM_COUNT] = {
  * Declaration of resources IDs
  */
 
-/* Resource sharedRes */
-#define sharedRes_id 0
-CONST(ResourceType, AUTOMATIC) sharedRes = sharedRes_id;
+/* Resource SensorRes */
+#define SensorRes_id 0
+CONST(ResourceType, AUTOMATIC) SensorRes = SensorRes_id;
 
 /*=============================================================================
  * Declaration of processes IDs
@@ -85,13 +85,13 @@ CONST(ResourceType, AUTOMATIC) sharedRes = sharedRes_id;
 #define Blink_id 0
 CONST(TaskType, AUTOMATIC) Blink = Blink_id;
 
-/* Task TaskB identifier */
-#define TaskB_id 1
-CONST(TaskType, AUTOMATIC) TaskB = TaskB_id;
-
 /* Task TaskV identifier */
-#define TaskV_id 2
+#define TaskV_id 1
 CONST(TaskType, AUTOMATIC) TaskV = TaskV_id;
+
+/* Task TaskB identifier */
+#define TaskB_id 2
+CONST(TaskType, AUTOMATIC) TaskB = TaskB_id;
 
 /* Task TaskS identifier */
 #define TaskS_id 3
@@ -126,11 +126,15 @@ CONST(AlarmType, AUTOMATIC) a500msec = a500msec_id;
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 /*-----------------------------------------------------------------------------
- * Resource descriptor of resource sharedRes
+ * Resource descriptor of resource SensorRes
  *
+ * Tasks which use this resource :
+ * TaskB
+ * TaskS
+ * TaskV
  */
-VAR(tpl_resource, OS_VAR) sharedRes_rez_desc = {
-  /* ceiling priority of the resource */  1,
+VAR(tpl_resource, OS_VAR) SensorRes_rez_desc = {
+  /* ceiling priority of the resource */  5,
   /* owner previous priority          */  0,
   /* owner of the resource            */  INVALID_PROC_ID,
 #if RESOURCE_BELONGS_TO_OS_APP == YES
@@ -169,7 +173,7 @@ VAR(tpl_resource, OS_VAR) res_sched_rez_desc = {
 #include "tpl_memmap.h"
 CONSTP2VAR(tpl_resource, AUTOMATIC, OS_APPL_DATA)
 tpl_resource_table[RESOURCE_COUNT] = {
-  &sharedRes_rez_desc,
+  &SensorRes_rez_desc,
   &res_sched_rez_desc
 };
 
@@ -411,7 +415,7 @@ CONST(tpl_proc_static, OS_CONST) Blink_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  2,
+  /* task base priority       */  1,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -439,109 +443,8 @@ VAR(tpl_proc, OS_VAR) Blink_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  2,
+  /* task priority                  */  1,
   /* task state                     */  SUSPENDED
-};
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Task TaskB descriptor
- */
-#define APP_Task_TaskB_START_SEC_CODE
-
-#include "tpl_memmap.h"
-/*
- * Task TaskB function prototype
- */
-
-FUNC(void, OS_APPL_CODE) TaskB_function(void);
-#define APP_Task_TaskB_STOP_SEC_CODE
-
-#include "tpl_memmap.h"
-
-/*-----------------------------------------------------------------------------
- * Target specific structures
- */
-
-/*
- * Task TaskB stack
- *
- */
-#define APP_Task_TaskB_START_SEC_STACK
-#include "tpl_memmap.h"
-tpl_stack_word TaskB_stack_zone[128/sizeof(tpl_stack_word)];
-#define APP_Task_TaskB_STOP_SEC_STACK
-#include "tpl_memmap.h"
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-#define TaskB_STACK { TaskB_stack_zone, 128 }
-
-/*
- * Task TaskB context
- */
-avr_context TaskB_int_context;
-#define TaskB_CONTEXT &TaskB_int_context
-
-#define OS_STOP_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-
-
-/*
-  No timing protection
- */
-
-#define OS_START_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-/*
- * Static descriptor of task TaskB
- */
-CONST(tpl_proc_static, OS_CONST) TaskB_task_stat_desc = {
-  /* context                  */  TaskB_CONTEXT,
-  /* stack                    */  TaskB_STACK,
-  /* entry point (function)   */  TaskB_function,
-  /* internal ressource       */  NULL,
-  /* task id                  */  TaskB_id,
-#if WITH_OSAPPLICATION == YES
-  /* OS application id        */  
-#endif
-  /* task base priority       */  3,
-  /* max activation count     */  1,
-  /* task type                */  TASK_BASIC,
-#if WITH_AUTOSAR_TIMING_PROTECTION == YES
-
-  /* execution budget */        0,
-  /* timeframe        */        0, 
-  /* pointer to the timing
-     protection descriptor    */ NULL
-
-#endif
-};
-
-#define OS_STOP_SEC_CONST_UNSPECIFIED
-#include "tpl_memmap.h"
-
-
-#define OS_START_SEC_VAR_UNSPECIFIED
-#include "tpl_memmap.h"
-/*
- * Dynamic descriptor of task TaskB
- */
-VAR(tpl_proc, OS_VAR) TaskB_task_desc = {
-  /* resources                      */  NULL,
-#if WITH_OSAPPLICATION == YES
-  /* if > 0 the process is trusted  */  0,    
-#endif /* WITH_OSAPPLICATION */
-  /* activate count                 */  0,
-  /* task priority                  */  3,
-  /* task state                     */  AUTOSTART
 };
 
 #define OS_STOP_SEC_VAR_UNSPECIFIED
@@ -600,6 +503,11 @@ avr_context TaskV_int_context;
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
+/*
+ * Resources used by task TaskV
+ *
+ * SensorRes
+ */
 
 /*
  * Static descriptor of task TaskV
@@ -613,7 +521,7 @@ CONST(tpl_proc_static, OS_CONST) TaskV_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  4,
+  /* task base priority       */  2,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -641,7 +549,113 @@ VAR(tpl_proc, OS_VAR) TaskV_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  4,
+  /* task priority                  */  2,
+  /* task state                     */  AUTOSTART
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Task TaskB descriptor
+ */
+#define APP_Task_TaskB_START_SEC_CODE
+
+#include "tpl_memmap.h"
+/*
+ * Task TaskB function prototype
+ */
+
+FUNC(void, OS_APPL_CODE) TaskB_function(void);
+#define APP_Task_TaskB_STOP_SEC_CODE
+
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Target specific structures
+ */
+
+/*
+ * Task TaskB stack
+ *
+ */
+#define APP_Task_TaskB_START_SEC_STACK
+#include "tpl_memmap.h"
+tpl_stack_word TaskB_stack_zone[128/sizeof(tpl_stack_word)];
+#define APP_Task_TaskB_STOP_SEC_STACK
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define TaskB_STACK { TaskB_stack_zone, 128 }
+
+/*
+ * Task TaskB context
+ */
+avr_context TaskB_int_context;
+#define TaskB_CONTEXT &TaskB_int_context
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+
+
+/*
+  No timing protection
+ */
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*
+ * Resources used by task TaskB
+ *
+ * SensorRes
+ */
+
+/*
+ * Static descriptor of task TaskB
+ */
+CONST(tpl_proc_static, OS_CONST) TaskB_task_stat_desc = {
+  /* context                  */  TaskB_CONTEXT,
+  /* stack                    */  TaskB_STACK,
+  /* entry point (function)   */  TaskB_function,
+  /* internal ressource       */  NULL,
+  /* task id                  */  TaskB_id,
+#if WITH_OSAPPLICATION == YES
+  /* OS application id        */  
+#endif
+  /* task base priority       */  3,
+  /* max activation count     */  1,
+  /* task type                */  TASK_BASIC,
+#if WITH_AUTOSAR_TIMING_PROTECTION == YES
+
+  /* execution budget */        0,
+  /* timeframe        */        0, 
+  /* pointer to the timing
+     protection descriptor    */ NULL
+
+#endif
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*
+ * Dynamic descriptor of task TaskB
+ */
+VAR(tpl_proc, OS_VAR) TaskB_task_desc = {
+  /* resources                      */  NULL,
+#if WITH_OSAPPLICATION == YES
+  /* if > 0 the process is trusted  */  0,    
+#endif /* WITH_OSAPPLICATION */
+  /* activate count                 */  0,
+  /* task priority                  */  3,
   /* task state                     */  AUTOSTART
 };
 
@@ -701,6 +715,11 @@ avr_context TaskS_int_context;
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
+/*
+ * Resources used by task TaskS
+ *
+ * SensorRes
+ */
 
 /*
  * Static descriptor of task TaskS
@@ -714,7 +733,7 @@ CONST(tpl_proc_static, OS_CONST) TaskS_task_stat_desc = {
 #if WITH_OSAPPLICATION == YES
   /* OS application id        */  
 #endif
-  /* task base priority       */  5,
+  /* task base priority       */  4,
   /* max activation count     */  1,
   /* task type                */  TASK_BASIC,
 #if WITH_AUTOSAR_TIMING_PROTECTION == YES
@@ -742,7 +761,7 @@ VAR(tpl_proc, OS_VAR) TaskS_task_desc = {
   /* if > 0 the process is trusted  */  0,    
 #endif /* WITH_OSAPPLICATION */
   /* activate count                 */  0,
-  /* task priority                  */  5,
+  /* task priority                  */  4,
   /* task state                     */  AUTOSTART
 };
 
@@ -769,8 +788,8 @@ FUNC(void, OS_CODE) tpl_avr_ISR2_handler(CONST(uint16, AUTOMATIC) id);
 CONSTP2CONST(tpl_proc_static, AUTOMATIC, OS_APPL_DATA)
 tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Blink_task_stat_desc,
-  &TaskB_task_stat_desc,
   &TaskV_task_stat_desc,
+  &TaskB_task_stat_desc,
   &TaskS_task_stat_desc,
   &IDLE_TASK_task_stat_desc
 };
@@ -778,8 +797,8 @@ tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 CONSTP2VAR(tpl_proc, AUTOMATIC, OS_APPL_DATA)
 tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Blink_task_desc,
-  &TaskB_task_desc,
   &TaskV_task_desc,
+  &TaskB_task_desc,
   &TaskS_task_desc,
   &IDLE_TASK_task_desc
 };
@@ -1081,8 +1100,8 @@ VAR(tpl_kern_state, OS_VAR) tpl_kern =
 CONSTP2CONST(char, AUTOMATIC, OS_APPL_DATA) proc_name_table[TASK_COUNT + ISR_COUNT + 1] = {
 
   "Blink",
-  "TaskB",
   "TaskV",
+  "TaskB",
   "TaskS",
   "*idle*"
 };

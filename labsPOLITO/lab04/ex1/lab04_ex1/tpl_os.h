@@ -379,7 +379,7 @@ DeclareTask(Blink);
 DeclareTask(TaskB);
 DeclareTask(TaskS);
 DeclareTask(TaskV);
-DeclareResource(sharedRes);
+DeclareResource(SensorRes);
 DeclareAlarm(AlarmBlink);
 DeclareAlarm(a100msec);
 DeclareAlarm(a125msecV);

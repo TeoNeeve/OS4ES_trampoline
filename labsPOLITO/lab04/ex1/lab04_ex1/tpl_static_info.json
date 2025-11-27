@@ -90,10 +90,22 @@
     {
       "ISRUSAGE" : [],
       "KIND" : "Resource",
-      "NAME" : "sharedRes",
-      "PRIORITY" : 1,
+      "NAME" : "SensorRes",
+      "PRIORITY" : 5,
       "RESOURCEPROPERTY" : "STANDARD",
-      "TASKUSAGE" : []
+      "TASKUSAGE" : 
+      [
+        
+        {
+          "VALUE" : "TaskB"
+        },        
+        {
+          "VALUE" : "TaskS"
+        },        
+        {
+          "VALUE" : "TaskV"
+        }
+      ]
     }
   ],
   "task" : 
@@ -105,7 +117,35 @@
       "KIND" : "Task",
       "NAME" : "Blink",
       "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskV",
+      "NONPREEMPTABLE" : "false",
       "PRIORITY" : 2,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "SensorRes"
+        }
+      ],
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -127,27 +167,13 @@
       "NAME" : "TaskB",
       "NONPREEMPTABLE" : "false",
       "PRIORITY" : 3,
-      "SCHEDULE" : "FULL",
-      "STACKSIZE" : 128,
-      "USEINTERNALRESOURCE" : "false"
-    },    
-    {
-      "ACTIVATION" : 1,
-      "AUTOSTART" : "true",
-      "AUTOSTART_S" : 
-      {
-        "APPMODE" : 
-        [
-          
-          {
-            "VALUE" : "stdAppmode"
-          }
-        ]
-      },
-      "KIND" : "Task",
-      "NAME" : "TaskV",
-      "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 4,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "SensorRes"
+        }
+      ],
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"
@@ -168,7 +194,14 @@
       "KIND" : "Task",
       "NAME" : "TaskS",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 5,
+      "PRIORITY" : 4,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "SensorRes"
+        }
+      ],
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 128,
       "USEINTERNALRESOURCE" : "false"

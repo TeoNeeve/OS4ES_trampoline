@@ -5,6 +5,13 @@
 #define K 5
 #define LED_PIN 13
 
+DeclareResource(SensorRes);
+
+volatile int Q[K];
+volatile int SensorIndex = 0;
+volatile int error = 0;
+volatile int alarm = 0;
+
 DeclareAlarm(a500msec);
 DeclareAlarm(a125msec);
 DeclareAlarm(a100msec);
@@ -28,10 +35,12 @@ void loop(void)
 TASK(TaskS)
 {
     int X = analogRead(A0);
-    static int Q[K];
-    static int SensorIndex = 0;
-    static int error = 0;
+    GetResource(SensorRes); 
+    Serial.println(X); // DEBUGGING ############
+
     if (X < 10 || X > 1013) {
+        error = 1;
+    } else {
         error = 0;
         if (SensorIndex < K) {
             Q[SensorIndex] = X;
@@ -39,23 +48,22 @@ TASK(TaskS)
             Serial.print("Queue overflow by ");
             Serial.println(SensorIndex - K + 1);
         }
-    } else {
-        error = 1;
     }
     SensorIndex++;
+
+    ReleaseResource(SensorRes);
     TerminateTask();
 }
 
 TASK(TaskB)
 {
-    int Q[K];
-    int SensorIndex;
-    int N;
-    int M;
-    static int alarm = 0;
-    SensorIndex = 0;
-    M = Q[0];
-    N = Q[0];
+    GetResource(SensorRes); 
+
+    SensorIndex = 0; // reset the index for next Q
+    int M = Q[0];
+    int N = Q[0];
+    Serial.println("Received DATA"); // DEBUGGING ############
+    
     for (int i = 1; i < K; ++i) {
         if (Q[i] > M) {
             M = Q[i];
@@ -65,28 +73,36 @@ TASK(TaskB)
         }
     }
     if (M - N > 500) {
+        Serial.println("M - N > 500, alarm 1"); // DEBUGGING ############
         alarm = 1;
     } else {
         alarm = 0;
     }
 
+    ReleaseResource(SensorRes); 
     TerminateTask();
 }
 
 TASK(TaskV)
 {
-    int alarm;
-    int error;
+    GetResource(SensorRes); 
+
     if (error == 1) {
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
+        Serial.println("LED veloci, errore 1"); // DEBUGGING ############
     } else if (alarm == 1) {
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
+        Serial.println("LED lenti, errore 0, alarm 1"); // DEBUGGING ############
     } else {
         CancelAlarm(AlarmBlink);
         digitalWrite(LED_PIN, LOW); // OFF
+        Serial.println("LED spenti, errore alarm 0"); // DEBUGGING ############
+
     }
+
+    ReleaseResource(SensorRes);
     TerminateTask();
 }
 
