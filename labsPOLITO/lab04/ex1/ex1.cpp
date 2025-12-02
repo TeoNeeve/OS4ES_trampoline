@@ -19,7 +19,6 @@ DeclareAlarm(AlarmBlink);
 
 void setup(void)
 {
-    Serial.begin(115200);
     pinMode(A0,INPUT);
     pinMode(LED_PIN, OUTPUT);
     StartOS(OSDEFAULTAPPMODE);
@@ -36,7 +35,6 @@ TASK(TaskS)
 {
     int X = analogRead(A0);
     GetResource(SensorRes); 
-    Serial.println(X); // DEBUGGING #########################################
 
     if (X < 10 || X > 1013) {
         error = 1;
@@ -62,7 +60,6 @@ TASK(TaskB)
     SensorIndex = 0; // reset the index for next Q
     int M = Q[0];
     int N = Q[0];
-    Serial.println("Dati ricevuti"); // DEBUGGING ###########################
     
     for (int i = 1; i < K; ++i) {
         if (Q[i] > M) {
@@ -73,7 +70,6 @@ TASK(TaskB)
         }
     }
     if (M - N > 500) {
-        Serial.println("M - N > 500, alarm 1"); // DEBUGGING ################
         alarm = 1;
     } else {
         alarm = 0;
@@ -90,15 +86,12 @@ TASK(TaskV)
     if (error == 1) {
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
-        Serial.println("VELOCE, errore 1"); // DEBUGGING ####################
     } else if (alarm == 1) {
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
-        Serial.println("LENTO, errore 0, alarm 1"); // DEBUGGING ############
     } else {
         CancelAlarm(AlarmBlink);
         digitalWrite(LED_PIN, LOW); // OFF
-        Serial.println("SPENTO, errore e alarm 0"); // DEBUGGING ############
     }
 
     ReleaseResource(SensorRes);
