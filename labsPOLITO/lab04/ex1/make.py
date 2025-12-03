@@ -29,7 +29,7 @@ except ImportError:
 	#it defines inline the red color, as other are defined in the makefile.py
 	print("\033[91mThe OS->BUILD->TRAMPOLINE_BASE_PATH key is not set correctly in the oil file lab04_ex1.oil.")
 	print("Set the correct Trampoline installation path in the oil file and run goil again:\033[0m")
-	print("goil -t=avr/arduino/uno --templates=/home/matteo/Trampoline/goil/templates lab04_ex1.oil")
+	print("goil -t=avr/arduino/uno --templates=/home/teovu/trampoline/goil/templates/ lab04_ex1.oil")
 	sys.exit(1)
 
 #--- To work with relative paths
@@ -60,7 +60,7 @@ make = makefile.Make(goal)
 oilFile = "lab04_ex1.oil"
 oilFileDep = "build/" + oilFile + ".dep"
 oilCompiler = "goil"
-oilFlags = ["-t=avr/arduino/uno", "--templates=/home/matteo/Trampoline/goil/templates"]
+oilFlags = ["-t=avr/arduino/uno", "--templates=/home/teovu/trampoline/goil/templates/"]
 trampoline_base_path = "../../../"
 
 #----------------------------------------------------------------------
