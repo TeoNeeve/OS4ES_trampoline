@@ -62,11 +62,11 @@ TASK(TaskB)
 
     GetResource(SensorRes); 
 
-    SensorIndex = 0; // reset the index for next Q
     localCount = (SensorIndex < K) ? SensorIndex : K;
     for (int i = 0; i < localCount; ++i) {
         Received_Q[i] = Q[i];
     }
+    SensorIndex = 0; // reset the index for next Q
     
     ReleaseResource(SensorRes);
 
