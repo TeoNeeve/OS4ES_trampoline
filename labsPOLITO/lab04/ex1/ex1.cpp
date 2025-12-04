@@ -85,9 +85,13 @@ TASK(TaskB)
     }
     if (M - N > 500) {
         Serial.println("M - N > 500, alarm 1"); // DEBUGGING ################
+        GetResource(SensorRes);
         alarm = 1;
+        ReleaseResource(SensorRes);
     } else {
+        GetResource(SensorRes);
         alarm = 0;
+        ReleaseResource(SensorRes);
     }
 
     TerminateTask();
