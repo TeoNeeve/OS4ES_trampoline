@@ -74,23 +74,31 @@ TASK(TaskW)
 
 TASK(TaskV)
 {
+    int LED_state = 0;
     GetResource(SensorRes); 
 
-    if (error == 1) {
+    int Received_alarm = alarm;
+    int Received_error = error;
+
+    ReleaseResource(SensorRes);
+
+    if (Received_error == 1 && LED_state != 2) {
+        LED_state = 2;
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 125, 125); // 4 Hz
         Serial.println("VELOCE, errore 1"); // DEBUGGING ####################
-    } else if (alarm == 1) {
+    } else if (Received_alarm == 1 && LED_state != 1) {
+        LED_state = 1;
         CancelAlarm(AlarmBlink);
         SetRelAlarm(AlarmBlink, 500, 500); // 1 Hz
         Serial.println("LENTO, errore 0, alarm 1"); // DEBUGGING ############
     } else {
-        CancelAlarm(AlarmBlink);
+        LED_state = 0;
+        CancelAlarm(AlarmBlink && LED_state != 0);
         digitalWrite(LED_PIN, LOW); // OFF
         Serial.println("SPENTO, errore e alarm 0"); // DEBUGGING ############
     }
 
-    ReleaseResource(SensorRes);
     TerminateTask();
 }
 

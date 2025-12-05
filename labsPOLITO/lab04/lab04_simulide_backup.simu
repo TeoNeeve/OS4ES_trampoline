@@ -1,0 +1,47 @@
+<circuit Speed_sps="100000" Speed_per="10" reactStep="50" noLinAcc="5" animate="0" Simu_Step_nS="1000" type="simulide_0.4">
+
+Unique  Id: Node-626: 
+Circuit Id: Node-626
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" hflip="1" Show_id="false" vflip="1" objectName="Node-626" valLabRot="0" circRot="nan" x="-364" mainComp="false" valLabelx="0" rotation="0" itemtype="Node" labely="-24" y="-396" id="Node-626" circPos="0,0" labelx="-16"/>
+
+Unique  Id: Oscope-597: 
+Circuit Id: Oscope-2
+<item hTick="50000000" boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" Tunnels=",,," hflip="1" Show_id="false" vflip="1" objectName="Oscope-597" Tracks="1" VolPos="-2.5,-2.5,-1.5,-1.5" valLabRot="0" AutoSC="4" circRot="0" x="-392" Filter="0" mainComp="false" valLabelx="0" rotation="0" itemtype="Oscope" Basic_X="135" Basic_Y="135" HideCh="false,false,false,false" labely="-100" y="-252" id="Oscope-2" Trigger="0" TimPos="0,0,0,0" circPos="0,0" labelx="-90" VolDiv="0.75,0.75,0.501,0.501"/>
+
+Unique  Id: Arduino Uno-595: 
+Circuit Id: Arduino Uno-1
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" Mhz="16" hflip="1" Show_id="true" vflip="1" objectName="Arduino Uno-595" Program="../../../../../../home/teovu/trampoline/labsPOLITO/lab04/ex1/ex1_arduino.hex" valLabRot="0" Logic_Symbol="false" circRot="8.442546681485118e-227" Auto_Load="false" eeprom="255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255" x="-556" mainComp="false" valLabelx="0" rotation="0" itemtype="Arduino" varList=",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," Name="arduinoUno" labely="-21" y="-460" id="Arduino Uno-1" circPos="0,0" labelx="100"/>
+
+Unique  Id: Clock-589: 
+Circuit Id: Clock-589
+<item boardRot="-1e+6" valLabely="8" boardPos="-1e+6,-1e+6" labelrot="0" Show_Volt="true" hflip="-1" Show_id="false" vflip="1" objectName="Clock-589" Freq="5" valLabRot="0" circRot="7.858115641683146e-256" Unit=" V" x="-320" Voltage="3" mainComp="false" valLabelx="-16" rotation="0" itemtype="Clock" Always_On="false" Out="false" labely="-24" y="-424" id="Clock-589" circPos="0,0" labelx="-64"/>
+
+Unique  Id: WaveGen-590: 
+Circuit Id: WaveGen-590
+<item boardRot="-1e+6" valLabely="8" boardPos="-1e+6,-1e+6" labelrot="0" Show_Volt="true" hflip="-1" Show_id="false" vflip="1" Quality="5" Wave_Type="0" objectName="WaveGen-590" Freq="5" valLabRot="0" circRot="0" Unit=" V" Volt_Base="1" Duty_Square="50" x="-320" Voltage="3" mainComp="false" valLabelx="-16" rotation="0" itemtype="WaveGen" Always_On="false" Out="true" labely="-24" y="-396" id="WaveGen-590" circPos="0,0" labelx="-64"/>
+
+Unique  Id: Fixed Voltage-591: 
+Circuit Id: Fixed Voltage-591
+<item boardRot="-1e+6" valLabely="8" boardPos="-1e+6,-1e+6" labelrot="0" Show_Volt="true" hflip="-1" Show_id="false" vflip="1" objectName="Fixed Voltage-591" valLabRot="0" circRot="6.96279869e-315" Unit=" V" x="-320" Voltage="3" mainComp="false" valLabelx="-16" rotation="0" itemtype="Fixed Voltage" Out="false" labely="-24" y="-368" id="Fixed Voltage-591" circPos="0,0" labelx="-64"/>
+
+Unique  Id: SerialTerm-624: 
+Circuit Id: SerialTerm-624
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" Mcu_Uart="1" sizex="516" posy="215" hflip="1" Show_id="false" vflip="1" objectName="SerialTerm-624" valLabRot="0" sizey="255" circRot="0" x="-556" mainComp="false" valLabelx="0" rotation="0" itemtype="SerialTerm" posx="1375" labely="-24" y="-460" id="SerialTerm-624" Mcu_Id="Arduino Uno-595" circPos="0,0" labelx="-16"/>
+
+Unique  Id: Connector-598: 
+Circuit Id: Connector-598
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" hflip="1" Show_id="false" vflip="1" objectName="Connector-598" valLabRot="0" pointList="-548,-332,-528,-332,-528,-300,-480,-300" startpinid="Arduino Uno-595-PB5" circRot="8.066037036752754e-308" enodeid="enode-598" x="-548" mainComp="false" valLabelx="0" rotation="0" itemtype="Connector" labely="-24" y="-332" id="Connector-598" circPos="0,0" labelx="-16" endpinid="Oscope-597-Pin0"/>
+
+Unique  Id: Connector-599: 
+Circuit Id: Connector-599
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" hflip="1" Show_id="false" vflip="1" objectName="Connector-599" valLabRot="0" pointList="-404,-404,-364,-404,-364,-396" startpinid="Arduino Uno-595-PC0" circRot="0" enodeid="enode-625" x="-404" mainComp="false" valLabelx="0" rotation="0" itemtype="Connector" labely="-24" y="-404" id="Connector-599" circPos="0,0" labelx="-16" endpinid="Node-626-0"/>
+
+Unique  Id: Connector-625: 
+Circuit Id: Connector-625
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" hflip="1" Show_id="false" vflip="1" objectName="Connector-625" valLabRot="0" pointList="-336,-396,-364,-396" startpinid="WaveGen-590-outnod" circRot="0" enodeid="enode-625" x="-336" mainComp="false" valLabelx="0" rotation="0" itemtype="Connector" labely="-24" y="-396" id="Connector-625" circPos="0,0" labelx="-16" endpinid="Node-626-1"/>
+
+Unique  Id: Connector-627: 
+Circuit Id: Connector-627
+<item boardRot="-1e+6" valLabely="0" boardPos="-1e+6,-1e+6" labelrot="0" hflip="1" Show_id="false" vflip="1" objectName="Connector-627" valLabRot="0" pointList="-364,-396,-364,-336,-484,-336,-484,-268,-480,-268" startpinid="Node-626-2" circRot="0" enodeid="enode-625" x="-364" mainComp="false" valLabelx="0" rotation="0" itemtype="Connector" labely="-24" y="-396" id="Connector-627" circPos="0,0" labelx="-16" endpinid="Oscope-597-Pin1"/>
+ 
+</circuit>
