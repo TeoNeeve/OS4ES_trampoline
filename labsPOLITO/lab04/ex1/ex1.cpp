@@ -38,17 +38,15 @@ TASK(TaskS)
     GetResource(SensorRes); 
     Serial.println(X); // DEBUGGING #########################################
 
-    if (X < 10 || X > 1013) {
-        error = 1;
-    } else {
-        error = 0;
-        if (SensorIndex < K) {
-            Q[SensorIndex] = X;
-            SensorIndex++;
-        } else {
-            Serial.print("Queue overflow by ");
-            Serial.println(SensorIndex - K + 1);
+    if (SensorIndex < K) {
+        Q[SensorIndex] = X;
+        SensorIndex++;
+        if (X < 10 || X > 1013) {
+            error = 1;
         }
+    } else {
+        Serial.print("Queue overflow by ");
+        Serial.println(SensorIndex - K + 1);
     }
 
     ReleaseResource(SensorRes);
@@ -85,15 +83,19 @@ TASK(TaskB)
             N = Q[i];
         }
     }
-    if (M - N > 500) {
-        Serial.println("M - N > 500, alarm 1"); // DEBUGGING ################
-        GetResource(SensorRes);
-        alarm = 1;
-        ReleaseResource(SensorRes);
-    } else {
-        GetResource(SensorRes);
-        alarm = 0;
-        ReleaseResource(SensorRes);
+    if (N > 10 && M < 1013){
+        if (M - N > 500) {
+            Serial.println("M - N > 500, alarm 1"); // DEBUGGING ################
+            GetResource(SensorRes);
+            error = 0;
+            alarm = 1;
+            ReleaseResource(SensorRes);
+        } else {
+            GetResource(SensorRes);
+            error = 0;
+            alarm = 0;
+            ReleaseResource(SensorRes);
+        }
     }
 
     TerminateTask();
