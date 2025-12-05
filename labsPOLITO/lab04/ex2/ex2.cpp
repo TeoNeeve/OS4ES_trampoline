@@ -38,31 +38,31 @@ TASK(TaskW)
     GetResource(SensorRes); 
     Serial.println(X); // DEBUGGING #########################################
 
-    if (X < 10 || X > 1013) {
-        error = 1;
+    if (SensorIndex < K) {
+        Q[SensorIndex] = X;
+        SensorIndex++;
+        if (X < 10 || X > 1013) {
+            error = 1;
+        }
     } else {
-        error = 0;
-        if (SensorIndex < K) {
-            Q[SensorIndex] = X;
-            SensorIndex++;
-        } else {
-            Serial.println("Dati ricevuti"); // DEBUGGING ##################
-            SensorIndex = 0;
-            int M = Q[0];
-            int N = Q[0];
-
-            for (int i = 1; i < K; ++i) {
-                if (Q[i] > M) {
-                    M = Q[i];
-                }
-                if (Q[i] < N) {
-                    N = Q[i];
-                }
+        SensorIndex = 0; 
+        int M = Q[0];
+        int N = Q[0];
+        for (int i = 1; i < K; ++i) {
+            if (Q[i] > M) {
+                M = Q[i];
             }
+            if (Q[i] < N) {
+                N = Q[i];
+            }
+        }
+        if (N > 10 && M < 1013){
             if (M - N > 500) {
                 Serial.println("M - N > 500, alarm 1"); // DEBUGGING ################
+                error = 0;
                 alarm = 1;
             } else {
+                error = 0;
                 alarm = 0;
             }
         }
