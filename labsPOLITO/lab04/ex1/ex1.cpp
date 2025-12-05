@@ -65,6 +65,8 @@ TASK(TaskB)
     localCount = (SensorIndex < K) ? SensorIndex : K;
     for (int i = 0; i < localCount; ++i) {
         Received_Q[i] = Q[i];
+        Serial.print("Received ");
+        Serial.println(Received_Q[i]);
     }
     SensorIndex = 0; // reset the index for next Q
     
