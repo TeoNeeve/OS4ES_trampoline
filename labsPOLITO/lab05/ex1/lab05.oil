@@ -1,0 +1,27 @@
+OIL_VERSION = "2.5";
+
+CPU little_hal {
+	OS config {
+		STATUS = STANDARD;
+		BUILD = TRUE {
+    		TRAMPOLINE_BASE_PATH = "../../..";
+			APP_NAME = "ex1_arduino";
+			APP_SRC = "ex1.cpp";
+			CPPCOMPILER = "avr-g++";
+    		COMPILER = "avr-gcc";
+    		LINKER = "avr-gcc";
+    		ASSEMBLER = "avr-gcc";
+    		COPIER = "avr-objcopy";
+    		SYSTEM = PYTHON;
+			LIBRARY = serial;
+    	};
+    SYSTEM_CALL = TRUE;
+	};
+
+	APPMODE stdAppmode {};
+
+
+
+
+
+};
