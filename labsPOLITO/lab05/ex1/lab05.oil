@@ -20,8 +20,11 @@ CPU little_hal {
 
 	APPMODE stdAppmode {};
 
-
-
-
+	TASK TaskA {
+		PRIORITY = 1;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
 
 };
