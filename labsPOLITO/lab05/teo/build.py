@@ -160,6 +160,7 @@ cSourceList.append(projfile.ProjectFile("os/tpl_os_os.c", trampoline_base_path))
 cSourceList.append(projfile.ProjectFile("os/tpl_os_interrupt_kernel.c", trampoline_base_path))
 cSourceList.append(projfile.ProjectFile("os/tpl_os_task_kernel.c", trampoline_base_path))
 cSourceList.append(projfile.ProjectFile("os/tpl_os_resource_kernel.c", trampoline_base_path))
+cSourceList.append(projfile.ProjectFile("os/tpl_os_alarm_kernel.c", trampoline_base_path))
 
 #--- Add C files of the application
 cSourceList.append(projfile.ProjectFile("ex1.cpp"))

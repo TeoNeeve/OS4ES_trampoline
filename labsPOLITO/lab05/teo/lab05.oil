@@ -18,13 +18,24 @@ CPU little_hal {
     SYSTEM_CALL = TRUE;
 	};
 
+	RESOURCE SensorRes {
+		RESOURCEPROPERTY = STANDARD;
+	};
+
 	APPMODE stdAppmode {};
+
+	ALARM TaskA5ms {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskA; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 5; };
+	};
 
 	TASK TaskA {
 		PRIORITY = 1;
 		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
 	};
 
 };

@@ -56,8 +56,20 @@ CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   1 /* task TaskA : stdAppmode */ 
 };
 
+CONST(tpl_appmode_mask, OS_CONST) tpl_alarm_app_mode[ALARM_COUNT] = {
+  1 /* alarm TaskA5ms : stdAppmode */ 
+};
+
 #define API_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
+
+/*=============================================================================
+ * Declaration of resources IDs
+ */
+
+/* Resource SensorRes */
+#define SensorRes_id 0
+CONST(ResourceType, AUTOMATIC) SensorRes = SensorRes_id;
 
 /*=============================================================================
  * Declaration of processes IDs
@@ -67,7 +79,40 @@ CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
 #define TaskA_id 0
 CONST(TaskType, AUTOMATIC) TaskA = TaskA_id;
 
+/*=============================================================================
+ * Declaration of Alarm IDs
+ */
+
+/* Alarm TaskA5ms identifier */
+#define TaskA5ms_id 0
+CONST(AlarmType, AUTOMATIC) TaskA5ms = TaskA5ms_id;
+
 #define API_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*=============================================================================
+ * Definition and initialization of regular Resource related structures
+ */
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*-----------------------------------------------------------------------------
+ * Resource descriptor of resource SensorRes
+ *
+ * Tasks which use this resource :
+ * TaskA
+ */
+VAR(tpl_resource, OS_VAR) SensorRes_rez_desc = {
+  /* ceiling priority of the resource */  2,
+  /* owner previous priority          */  0,
+  /* owner of the resource            */  INVALID_PROC_ID,
+#if RESOURCE_BELONGS_TO_OS_APP == YES
+  /* OS Application id                */  
+#endif
+
+  /* next resource in the list        */  NULL
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
 /**
@@ -96,6 +141,7 @@ VAR(tpl_resource, OS_VAR) res_sched_rez_desc = {
 #include "tpl_memmap.h"
 CONSTP2VAR(tpl_resource, AUTOMATIC, OS_APPL_DATA)
 tpl_resource_table[RESOURCE_COUNT] = {
+  &SensorRes_rez_desc,
   &res_sched_rez_desc
 };
 
@@ -324,6 +370,11 @@ avr_context TaskA_int_context;
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
 
+/*
+ * Resources used by task TaskA
+ *
+ * SensorRes
+ */
 
 /*
  * Static descriptor of task TaskA
@@ -406,6 +457,74 @@ tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 
 
 /*=============================================================================
+ * Definition and initialization of Alarm related structures
+ */
+/*-----------------------------------------------------------------------------
+ * Alarm TaskA5ms descriptor
+ *
+ * This alarm does the activation of task TaskA
+ */
+
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+CONST(tpl_task_activation_action, OS_CONST) TaskA5ms_action = {
+  {
+    /* action function  */  tpl_action_activate_task
+  },
+  /* task id            */  TaskA_id
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+ 
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+CONST(tpl_alarm_static, OS_CONST) TaskA5ms_static = {
+  {
+    /* pointer to counter           */  &SystemCounter_counter_desc,
+    /* pointer to the expiration    */  tpl_raise_alarm
+#if (WITH_ID == YES)
+    /* id of the alarm for tracing  */  , TaskA5ms_id
+#endif
+#if WITH_OSAPPLICATION == YES
+    /* OS application id            */  , 
+#endif
+  },
+  /* action of the alarm  */  (tpl_action *)&TaskA5ms_action
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+VAR(tpl_time_obj, OS_VAR) TaskA5ms_alarm_desc = {
+    /* pointer to the static part   */  (tpl_time_obj_static *)&TaskA5ms_static,
+    /* next alarm                   */  NULL,
+    /* prev alarm                   */  NULL,
+    /* cycle                        */  5,
+    /* date                         */  1,
+    /* State of the alarm           */  ALARM_AUTOSTART
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+CONSTP2VAR(tpl_time_obj, AUTOMATIC, OS_APPL_DATA)
+  tpl_alarm_table[ALARM_COUNT] = {
+  &TaskA5ms_alarm_desc
+};
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*=============================================================================
  * Declaration of flags functions
  */
 /* $FLAGSFUNCTIONS$ */
@@ -416,8 +535,9 @@ tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[3];
-VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[3] = {
+VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[4];
+VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[4] = {
+  0,
   0,
   0
 };

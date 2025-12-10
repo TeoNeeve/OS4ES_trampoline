@@ -103,7 +103,7 @@
 /*-----------------------------------------------------------------------------
  * Number of priority levels
  */
-#define PRIO_LEVEL_COUNT       2
+#define PRIO_LEVEL_COUNT       3
 
 /*-----------------------------------------------------------------------------
  * Number of tasks
@@ -128,12 +128,12 @@
 /*-----------------------------------------------------------------------------
  * Number of alarms
  */
-#define ALARM_COUNT            0
+#define ALARM_COUNT            1
 
 /*-----------------------------------------------------------------------------
  * Number of regular resources (standard and linked) plus RES_SCHEDULER if used 
  */
-#define RESOURCE_COUNT         1 
+#define RESOURCE_COUNT         2 
 
 /*-----------------------------------------------------------------------------
  * Number of events
