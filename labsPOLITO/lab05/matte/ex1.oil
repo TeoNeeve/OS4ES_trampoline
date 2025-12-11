@@ -1,0 +1,50 @@
+OIL_VERSION = "2.5";
+
+CPU little_hal {
+	OS config {
+		STATUS = STANDARD;
+		BUILD = TRUE {
+    		TRAMPOLINE_BASE_PATH = "../../..";
+			APP_NAME = "ex1_arduino";
+			APP_SRC = "ex1.cpp";
+			CPPCOMPILER = "avr-g++";
+    		COMPILER = "avr-gcc";
+    		LINKER = "avr-gcc";
+    		ASSEMBLER = "avr-gcc";
+    		COPIER = "avr-objcopy";
+    		SYSTEM = PYTHON;
+			LIBRARY = serial;
+    	};
+    SYSTEM_CALL = TRUE;
+	};
+
+
+    RESOURCE SensorRes {
+        RESOURCEPROPERTY = STANDARD;
+    };
+
+    EVENT  PrintEvent {
+        MASK = AUTO;
+    };
+
+	ALARM TaskA5ms {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskA; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 5; };
+	};
+
+    TASK TaskA {
+		PRIORITY = 2;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
+	};
+
+    TASK TaskB {
+		PRIORITY = 1;
+		AUTOSTART = FALSE;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+		RESOURCE = SensorRes;
+	};
