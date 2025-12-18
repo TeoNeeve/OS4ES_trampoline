@@ -18,19 +18,22 @@ CPU little_hal {
     SYSTEM_CALL = TRUE;
 	};
 
+	APPMODE stdAppmode {};
 
     RESOURCE SensorRes {
         RESOURCEPROPERTY = STANDARD;
-    };
-
-    EVENT  PrintEvent {
-        MASK = AUTO;
     };
 
 	ALARM TaskA5ms {
 		COUNTER = SystemCounter;
 		ACTION = ACTIVATETASK { TASK = TaskA; };
 		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 5; };
+	};
+
+	ALARM TaskB50ms {
+		COUNTER = SystemCounter;
+		ACTION = ACTIVATETASK { TASK = TaskB; };
+		AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 1; CYCLETIME = 50; };
 	};
 
     TASK TaskA {
@@ -43,8 +46,9 @@ CPU little_hal {
 
     TASK TaskB {
 		PRIORITY = 1;
-		AUTOSTART = FALSE;
+		AUTOSTART = TRUE { APPMODE = stdAppmode; };
 		ACTIVATION = 1;
 		SCHEDULE = FULL;
 		RESOURCE = SensorRes;
 	};
+};

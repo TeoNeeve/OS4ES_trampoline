@@ -4,15 +4,10 @@
 
 #define IN_PIN 0
 
-volatile int elapsed_time = 0;
 volatile int digit_value = 0;
-volatile int init_time = 0;
-volatile bool previous_state = false;
 volatile bool PW_error_flag = false;
-
-volatile bool is_silence_processed = false; 
-volatile int pulse_width = 0;   // Durata livello ALTO
-volatile int silence_time = 0;  // Durata livello BASSO
+volatile bool end_of_number_detected = false;
+volatile bool print_event = false;
 
 void setup(void)
 {
@@ -30,40 +25,35 @@ void loop(void)
 
 TASK(TaskA)
 {
+    int elapsed_time = 0;
+    static int init_time = 0;
+    static bool previous_state = false;
+
     GetResource(SensorRes); 
     int sensor_value = digitalRead(IN_PIN);
-    unsigned long current_time = millis();
-    ReleaseResource(SensorRes);
     if (sensor_value == 1 && !previous_state) {
         previous_state = true;
-        
-        elapsed_time = current_time - init_time;
-        init_time = current_time;
-        if (silence_time > 100) {
-            SetEvent(TaskB, PrintEvent);
+        elapsed_time = millis() - init_time;
+        if (elapsed_time >= 100) {
+            if (elapsed_time > 210){
+                end_of_number_detected = true;
+            }
+            print_event = true;
         }
-        is_silence_processed = false;
-    } 
-    
-    else if (sensor_value == 0 && previous_state) {
+        init_time = millis();
+    } else if (sensor_value == 0 && previous_state) {
         previous_state = false;
         digit_value++;
+        if (digit_value == 10) {
+            digit_value = 0;
+        }
+        elapsed_time = millis() - init_time;
         if (elapsed_time >= 60) {
             PW_error_flag = true;
         }
-    //(Monitoraggio fine numero)
-    else if (sensor_value == 0 && !previous_state) {
-        int current_silence = current_time - init_time;
-        
-        // Se il silenzio supera 210ms e non abbiamo ancora segnalato la fine
-        if (current_silence > 210 && !is_silence_processed) { // 
-            elapsed_time = current_silence; // Passiamo questo dato al Task B
-            SetEvent(TaskB, PrintEvent);
-            is_silence_processed = true;
-        }
+        init_time = millis();
     }
-    }
-
+    ReleaseResource(SensorRes);
     TerminateTask();
 }
 
@@ -72,36 +62,29 @@ TASK(TaskB)
     int local_digit = 0;
     bool local_error = false;
     bool local_end = false;
-    while(1) {
-        WaitEvent(PrintEvent);
-        GetEvent(TaskA, &mask);
-        ClearEvent(mask);
-        GetResource(SensorRes);
-        local_digit = digit_value;       
-        local_error = PW_error_flag;
 
+    GetResource(SensorRes);
+    if (!print_event) {
+        ReleaseResource(SensorRes);
+    } else {
+        local_digit = digit_value; // save local copies of shared variables   
+        local_error = PW_error_flag;
         local_end = end_of_number_detected;
-        digit_value = 0;
+
+        digit_value = 0; // reset shared variables
         PW_error_flag = false;
-        end_of_number_detected = false; // sezione critica resetto le variabili globali e le salvo in locali
+        end_of_number_detected = false;
+        print_event = false;
         ReleaseResource(SensorRes);
 
-        if (local_digit > 0) {
-            if (local_digit == 10) {
-                Serial.print("0");
-            } else {
-                Serial.print(local_digit);
-            }
-
-            if (local_error) {
-                Serial.print("*");
-            }
+        // print on serial local variables
+        Serial.print(local_digit);
+        if (local_error) {
+            Serial.print("*");
         }
-
         if (local_end) {
             Serial.println("/");
         }
     }
-    
     TerminateTask();
 }

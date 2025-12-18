@@ -1,0 +1,136 @@
+
+{
+  "alarm" : 
+  [
+    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskA"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 1,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 5
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "TaskA5ms"
+    },    
+    {
+      "ACTION" : "ACTIVATETASK",
+      "ACTION_S" : 
+      {
+        "TASK" : "TaskB"
+      },
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "ALARMTIME" : 1,
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ],
+        "CYCLETIME" : 50
+      },
+      "COUNTER" : "SystemCounter",
+      "NAME" : "TaskB50ms"
+    }
+  ],
+  "event" : [],
+  "ioc" : [],
+  "isr" : [],
+  "message" : [],
+  "resource" : 
+  [
+    
+    {
+      "ISRUSAGE" : [],
+      "KIND" : "Resource",
+      "NAME" : "SensorRes",
+      "PRIORITY" : 3,
+      "RESOURCEPROPERTY" : "STANDARD",
+      "TASKUSAGE" : 
+      [
+        
+        {
+          "VALUE" : "TaskA"
+        },        
+        {
+          "VALUE" : "TaskB"
+        }
+      ]
+    }
+  ],
+  "task" : 
+  [
+    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskB",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "SensorRes"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "TaskA",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 2,
+      "RESOURCE" : 
+      [
+        
+        {
+          "VALUE" : "SensorRes"
+        }
+      ],
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 128,
+      "USEINTERNALRESOURCE" : "false"
+    }
+  ]
+}
